@@ -7,7 +7,7 @@ import pandas as pd
 import seaborn as sns
 
 # 使用keras.utils.get_file函数获取远程数据集
-dataset_path = keras.utils.get_file("D:/WorkSpace/tf_gpu/tf/data/auto-mpg.data",
+dataset_path = keras.utils.get_file("自己想要存放的数据的路径，例如：auto-mpg.data",
                                     "http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data")
 print('打印数据的存储路径', dataset_path)
 
