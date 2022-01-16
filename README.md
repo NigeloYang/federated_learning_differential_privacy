@@ -10,9 +10,21 @@ Keras: https://keras-zh.readthedocs.io
 Tensorflow: https://tensorflow.google.cn/overview
 
 ## keras 篇
-keras 学习相关目录如下:
+目标：涵盖 Keras 的两个模型、API、激活函数、损失函数:
+
+完成：两个模型，部分API
 
 ## tensorflow 篇
-Tensorflow 学习目录如下
+目标：Tensorflow基础知识、Tensorflow.API、Tensorflow 案例 
 
-Federated Learning (FL), 主要介绍了FL学习的基础知识，以及如何加入自己的Tensorflow模型中  
+完成：暂无内容
+
+## Federated Learning篇  
+目标：TFF模型学习、TFF 案例、自定义　FL　模型
+
+完成：部分案例，部分　FL、TFF知识
+
+## Privacy 篇
+主要记录隐私保护相关的内容
+
+目标：暂无内容
