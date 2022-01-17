@@ -1,2 +1,4 @@
 #主要讲解了 tensorflow API
-## basic.py 主要记录了 tensorflow 的 api
+tf.py 记录 Tensorflow API 中的 tf
+
+tf_data.py 记录 Tensorflow API 中 tf.data

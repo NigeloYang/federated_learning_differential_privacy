@@ -197,4 +197,3 @@ handle	      The reference to the TensorArray.
 # print(ta.read(1))  # tf.Tensor(20.0, shape=(), dtype=float32)
 # print(ta.read(2))  # tf.Tensor(30.0, shape=(), dtype=float32)
 # print(ta.stack())  # tf.Tensor([10. 20. 30.], shape=(3,), dtype=float32)
-
