@@ -7,9 +7,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 import numpy as np
 import tensorflow as tf
 
-dataset = tf.data.Dataset.range(8)
-# dataset = dataset.batch(3)
-# print(list(dataset.as_numpy_iterator()))
-
-dataset = dataset.batch(3, drop_remainder=True)
+features = tf.constant([[1, 3], [2, 1], [3, 3]]) # ==> 3x2 tensor
+labels = tf.constant(['A', 'B', 'A']) # ==> 3x1 tensor
+dataset = tf.data.Dataset.from_tensor_slices((features, labels))
 print(list(dataset.as_numpy_iterator()))
