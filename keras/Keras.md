@@ -1,38 +1,37 @@
-# keras 学习记录（tensorflow2.X）
 ## Keras简介
-    Keras是基于TensorFlow和Theano（由加拿大蒙特利尔大学开发的机器学习框架）的深度学习库，是由纯python编写而成的高层神经网络API，也仅支持
-    python开发。它是为了支持快速实践而对tensorflow或者Theano的再次封装，让我们可以不用关注过多的底层细节，能够把想法快速转换为结果。它也很
-    灵活，且比较容易学。Keras默认的后端为tensorflow，如果想要使用theano可以自行更改。tensorflow和theano都可以使用GPU进行硬件加速，往往
-    可以比CPU运算快很多倍。因此如果你的显卡支持cuda的话，建议尽可能利用cuda加速模型训练。（当机器上有可用的GPU时，代码会自动调用GPU 进行并行
-    计算。）目前Keras已经被TensorFlow收录，添加到TensorFlow 中，成为其默认的框架，成为TensorFlow官方的高级API。
+Keras是基于TensorFlow和Theano（由加拿大蒙特利尔大学开发的机器学习框架）的深度学习库，是由纯python编写而成的高层神经网络API，也仅支持
+python开发。它是为了支持快速实践而对tensorflow或者Theano的再次封装，让我们可以不用关注过多的底层细节，能够把想法快速转换为结果。它也很
+灵活，且比较容易学。Keras默认的后端为tensorflow，如果想要使用theano可以自行更改。tensorflow和theano都可以使用GPU进行硬件加速，往往
+可以比CPU运算快很多倍。因此如果你的显卡支持cuda的话，建议尽可能利用cuda加速模型训练。（当机器上有可用的GPU时，代码会自动调用GPU 进行并行
+计算。）目前Keras已经被TensorFlow收录，添加到TensorFlow 中，成为其默认的框架，成为TensorFlow官方的高级API。
 
-## Keras 安装
-    一般在安装 tensorflow2.0 的时候会自动安装 keras 的适配版本
-    安装方式：因为笔者使用的 anaconda 对 python 环境进行控制的。所以，先创建了一个 python == 3.8 环境(Windows 10)
-    第一步：conda create -n your_env_name python=x.x 例如 conda create -n tf python=3.8
-    第二步：激活环境 conda activate your_env_name  例如 conda activate tf
-    第三步：进入环境以后输入：pip install tensorflow==2.x.0
+## 环境安装
+安装方式：因为笔者使用的 anaconda 对 python 环境进行控制的。所以，先创建了一个 python == 3.8 环境(Windows 10)
+1. conda create -n your_env_name python=x.x 例如 conda create -n tf python=3.8
+2. 激活环境 conda activate your_env_name  例如 conda activate tf
+3. 进入环境以后输入：pip install tensorflow==2.x.0
 
-## Keras 基础
-### Keras Moddel
-    在 Keras 中有两类主要的模型：Sequential 顺序模型 和 使用函数式 API 的 Model 类模型。
-    这些模型有许多共同的方法和属性： 
-        model.layers 是包含模型网络层的展平列表。
-        model.inputs 是模型输入张量的列表。
-        model.outputs 是模型输出张量的列表。
-        model.summary() 打印出模型概述信息。 它是 utils.print_summary 的简捷调用。
-        model.get_config() 返回包含模型配置信息的字典。
-        model.get_weights() 返回模型中所有权重张量的列表，类型为 Numpy 数组。
-        model.set_weights(weights) 从 Numpy 数组中为模型设置权重。列表中的数组必须与 get_weights() 返回的权重具有相同的尺寸。
-        model.to_json() 以 JSON 字符串的形式返回模型的表示。请注意，该表示不包括权重，仅包含结构。你可以通过以下方式从 JSON 字符串
-            重新实例化同一模型（使用重新初始化的权重）：
-        model.to_yaml() 以 YAML 字符串的形式返回模型的表示。请注意，该表示不包括权重，只包含结构。
-        model.save_weights(filepath) 将模型权重存储为 HDF5 文件。
-        model.load_weights(filepath, by_name=False): 从 HDF5 文件（由 save_weights 创建）中加载权重。默认情况下，模型的结
-            构应该是不变的。 如果想将权重载入不同的模型（部分层相同）， 设置 by_name=True 来载入那些名字相同的层的权重。
+## Keras Moddel
+在 Keras 中有两类主要的模型：Sequential 顺序模型 和 使用函数式 API 的 Model 类模型。 这些模型有许多共同的方法和属性： 
+- model.layers 是包含模型网络层的展平列表。
+- model.inputs 是模型输入张量的列表。
+- model.outputs 是模型输出张量的列表。
+- model.summary() 打印出模型概述信息。 它是 utils.print_summary 的简捷调用。
+- model.get_config() 返回包含模型配置信息的字典。
+- model.get_weights() 返回模型中所有权重张量的列表，类型为 Numpy 数组。
+- model.set_weights(weights) 从 Numpy 数组中为模型设置权重。列表中的数组必须与 get_weights() 返回的权重具有相同的尺寸。
+- model.to_json() 以 JSON 字符串的形式返回模型的表示。请注意，该表示不包括权重，仅包含结构。你可以通过以下方式从 JSON 字符串
+    重新实例化同一模型（使用重新初始化的权重）：
+- model.to_yaml() 以 YAML 字符串的形式返回模型的表示。请注意，该表示不包括权重，只包含结构。
+- model.save_weights(filepath) 将模型权重存储为 HDF5 文件。
+- model.load_weights(filepath, by_name=False): 从 HDF5 文件（由 save_weights 创建）中加载权重。默认情况下，模型的结
+    构应该是不变的。 如果想将权重载入不同的模型（部分层相同）， 设置 by_name=True 来载入那些名字相同的层的权重。
 
-#### Keras Sequential 顺序模型
-##### model.complie() 编译函数用于配置训练模型
+## Keras Sequential 顺序模型
+创建模型： model = tf.keras.Sequential()
+
+### model.complie() 编译函数用于配置训练模型
+
     compile(optimizer, loss=None, metrics=None, loss_weights=None, sample_weight_mode=None, 
         weighted_metrics=None, target_tensors=None)
 
@@ -59,7 +58,8 @@
     异常
         ValueError: 如果 optimizer, loss, metrics 或 sample_weight_mode 这些参数不合法。
 
-##### model.fit() 训练函数以固定数量的轮次（数据集上的迭代）训练模型
+### model.fit() 训练函数以固定数量的轮次（数据集上的迭代）训练模型
+
     fit(x=None, y=None, batch_size=None, epochs=1, verbose=1, callbacks=None, validation_split=0.0, 
         validation_data=None, shuffle=True, class_weight=None, sample_weight=None, initial_epoch=0, 
         steps_per_epoch=None, validation_steps=None, validation_freq=1, max_queue_size=10, workers=1, 
@@ -125,7 +125,8 @@
         RuntimeError: 如果模型从未编译。
         ValueError: 在提供的输入数据与模型期望的不匹配的情况下。
 
-##### model.evaluate() 评估函数返回误差值和评估标准值
+### model.evaluate() 评估函数返回误差值和评估标准值
+
     evaluate(x=None, y=None, batch_size=None, verbose=1, sample_weight=None, steps=None, 
         callbacks=None, max_queue_size=10, workers=1, use_multiprocessing=False)
 
@@ -160,8 +161,9 @@
     返回 
         标量测试误差（如果模型只有单个输出且没有评估指标）或标量列表（如果模型具有多个输出和/或指标）。 
         属性 model.metrics_names 将提供标量输出的显示标签。
-        
-##### mdoel.predict() 预测函数通过输入样本生成输出预测
+
+### mdoel.predict() 预测函数通过输入样本生成输出预测
+
     predict(x, batch_size=None, verbose=0, steps=None, callbacks=None, max_queue_size=10, 
         workers=1, use_multiprocessing=False)
 
@@ -190,7 +192,7 @@
     异常
         ValueError: 如果提供的输入数据与模型的期望数据不匹配，或者有状态模型收到的数量不是批量大小的倍数。
 
-##### 一个案例
+### 一个案例
 ```python
 # 完整的Keras Sequential 顺序模型
 import numpy as np
@@ -224,10 +226,9 @@ score = model.evaluate(x_test, y_test, batch_size=128)
 
 # model.predict() 函数用于预测
 result = model.predict(x_test)
-
 ```
 
-#### 函数式 API 的 Model 类模型
+## 函数式 API 的 Model 类模型
 ```python
 # 在函数式 API 中，自己需要给定一些输入张量和输出张量，可以通过以下方式实例化一个 Model：
 
@@ -239,19 +240,21 @@ a = Input(shape=(32,))
 b = Dense(32)(a)
 model = Model(inputs=a, outputs=b)
 
-# 在多输入或多输出模型的情况下，你也可以使用列表：
+# 在多输入或多输出模型的情况下，也可以使用列表：
 model = Model(inputs=[a1, a2], outputs=[b1, b3, b3])
 ```
-    对应函数：model.compile(), model.fit(), mdoel.evaluate(), model.predict() 的参数可以参考 model.Sequential() 顺序模型
+函数式 API 的 Model 类模型对应函数参数可以参考 model.Sequential() 顺序模型：model.compile(), model.fit(), mdoel.evaluate(), model.predict() 
 
-##### 一个例子
-    以下是函数式 API 的一个很好的例子：具有多个输入和输出的模型。函数式 API 使处理大量交织的数据流变得容易。
-    在这个例子中，我们试图预测 Twitter 上的一条新闻标题有多少转发和点赞数。模型的主要输入将是新闻标题本身，即一系列词语，
-    但是为了增添趣味，我们的模型还添加了其他的辅助输入来接收额外的数据，例如新闻标题的发布的时间等。 
-    该模型也将通过两个损失函数进行监督学习。较早地在模型中使用主损失函数（参见loss部分内容），是深度学习模型的一个良好正则方法。
+### 一个例子
+以下是函数式 API 的一个很好的例子：具有多个输入和输出的模型。函数式 API 使处理大量交织的数据流变得容易。
+在这个例子中，我们试图预测 Twitter 上的一条新闻标题有多少转发和点赞数。模型的主要输入将是新闻标题本身，即一系列词语，
+但是为了增添趣味，我们的模型还添加了其他的辅助输入来接收额外的数据，例如新闻标题的发布的时间等。 
+该模型也将通过两个损失函数进行监督学习。较早地在模型中使用主损失函数（参见loss部分内容），是深度学习模型的一个良好正则方法。
 
-    模型结构如下图所示：
+模型结构如下图所示：
 ![函数式 API 案例模型结构](image/function_model_api.png)
+
+
 ```python
 # Coding
 import tensorflow as tf
@@ -314,61 +317,249 @@ pred = model.predict([headline_data, additional_data])
 #           epochs=50, batch_size=32)
 
 # model.predict({'main_input': headline_data, 'aux_input': additional_data})
-
 ```
 
-### Keras Network Layer（Keras 网络层）
-#### 核心网络层
-    Dense（全连接层）
-         tf.keras.layers.Dense(units, activation=None, use_bias=True, kernel_initializer='glorot_uniform',
-            bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, activity_regularizer=None,
-            kernel_constraint=None, bias_constraint=None)
+## Layer
+###  Dense（全连接层）
+     tf.keras.layers.Dense(units, activation=None, use_bias=True, kernel_initializer='glorot_uniform',
+        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, activity_regularizer=None,
+        kernel_constraint=None, bias_constraint=None)
+
+    参数：
+        units: 正整数，输出空间维度。
+        activation: 激活函数 (详见 activations)。 若不指定，则不使用激活函数 (即，线性激活: a(x) = x)。
+        use_bias: 布尔值，该层是否使用偏置向量。
+        kernel_initializer: kernel 权值矩阵的初始化器 (详见 initializers)。
+        bias_initializer: 偏置向量的初始化器 (详见 initializers)。
+        kernel_regularizer: 运用到 kernel 权值矩阵的正则化函数 (详见 regularizer)。
+        bias_regularizer: 运用到偏置向量的的正则化函数 (详见 regularizer)。
+        activity_regularizer: 运用到层的输出的正则化函数 (它的 "activation")。 (详见 regularizer)。
+        kernel_constraint: 运用到 kernel 权值矩阵的约束函数 (详见 constraints)。
+        bias_constraint: 运用到偏置向量的约束函数 (详见 constraints)。
+
+```python
+# demo
+import tensorflow as tf
+
+# 创建一个模型，并且采用 shape= (None, 16) 的输入数组, 输出数组为 shape=(None, 32)。注意在第一层之后，你不需要再指定输入的大小了：
+model = tf.keras.models.Sequential()
+model.add(tf.keras.Input(shape=(16,)))
+model.add(tf.keras.layers.Dense(32, activation='relu'))
+model.add(tf.keras.layers.Dense(32))
+print(model.output_shape)  # (None, 32)
+```
+### Conv1D
+    作用：
+
+    函数：tf.keras.layers.Conv1D(
+            filters, kernel_size, strides=1, padding='valid',
+            data_format='channels_last', dilation_rate=1, groups=1,
+            activation=None, use_bias=True, kernel_initializer='glorot_uniform',
+            bias_initializer='zeros', kernel_regularizer=None,
+            bias_regularizer=None, activity_regularizer=None, kernel_constraint=None,
+            bias_constraint=None, **kwargs
+        )
     
-        参数：
-            units: 正整数，输出空间维度。
-            activation: 激活函数 (详见 activations)。 若不指定，则不使用激活函数 (即，线性激活: a(x) = x)。
-            use_bias: 布尔值，该层是否使用偏置向量。
-            kernel_initializer: kernel 权值矩阵的初始化器 (详见 initializers)。
-            bias_initializer: 偏置向量的初始化器 (详见 initializers)。
-            kernel_regularizer: 运用到 kernel 权值矩阵的正则化函数 (详见 regularizer)。
-            bias_regularizer: 运用到偏置向量的的正则化函数 (详见 regularizer)。
-            activity_regularizer: 运用到层的输出的正则化函数 (它的 "activation")。 (详见 regularizer)。
-            kernel_constraint: 运用到 kernel 权值矩阵的约束函数 (详见 constraints)。
-            bias_constraint: 运用到偏置向量的约束函数 (详见 constraints)。 
+    参数: 
+        filters:  整数，输出空间的维度（即卷积中输出滤波器的数量）
+        kernel_size:  单个整数的整数或元组列表，指定一维卷积窗口的长度
+        strides:	一个整数或单个整数的元组列表，指定卷积的步长。指定任何 stride 值 != 1 与指定任何 dilation_rate 值 != 1 不兼容。
+        padding:	"valid" 意味着没有填充。 , "same" 导致在输入的左/右或上/下均匀填充零，以使输出具有与输入相同的高度/宽度尺寸。
+                    "causal" 导致因果（扩张）卷积，例如输出[t] 不依赖于输入[t+1:]。在模型不应违反时间顺序的时间数据建模时很有用。
+        data_format:	一个字符串，channels_last（默认）或 channels_first 之一。
+        dilation_rate:	一个整数或单个整数的元组/列表，指定用于扩张卷积的扩张率。
+                        目前，指定任何 dilation_rate 值 != 1 与指定任何 strides 值 != 1 是不兼容的。
+        groups:	 一个正整数，指定输入沿通道轴拆分的组数。每个组分别与 filters / groups filters 进行卷积。
+                输出是沿通道轴的所有组结果的串联。输入通道和过滤器都必须可以按组整除。
+        activation:	要使用的激活功能。如果您未指定任何内容，则不会应用激活
+        use_bias:	bool，层是否使用偏置向量。
+        kernel_initializer:	内核权重矩阵的初始化程序（请参阅 keras.initializers）。默认为“glorot_uniform”。
+        bias_initializer:	偏置向量的初始化程序。 默认为“zero”。
+        kernel_regularizer:	应用于内核权重矩阵的正则化函数
+        bias_regularizer:	应用于偏置向量的正则化函数
+        activity_regularizer:	正则化函数应用于层的输出 (its "activation")
+        kernel_constraint:	应用于核矩阵的约束函数
+        bias_constraint:	应用于偏置向量的约束函数
 
-    Activation：激活函数
-        tf.keras.layers.Activation(activation)
-        参数：activation: 要使用的激活函数的名称 (详见: activations)
-        输入尺寸：任意尺寸。 当使用此层作为模型中的第一层时， 使用参数 input_shape （整数元组，不包括样本数的轴）。
-        输出尺寸：与输入相同。
+```python
+# demo
+import  tensorflow as tf
 
-    Dropout: 在训练中每次更新时， 将输入单元的按比率随机设置为 0， 这有助于防止过拟合
-        tf.keras.layers.Dropout(rate, noise_shape=None, seed=None)
+# 输入是 128 个长度的向量，有 10 个时间步长，批量大小为 4
+input_shape = (4, 10, 128)
+x = tf.random.normal(input_shape)
+y = tf.keras.layers.Conv1D(32, 3, activation='relu',input_shape=input_shape[1:])(x)
+print(y.shape)  # (4,8,32)
+```
 
-        参数：
-            rate: 在 0 和 1 之间浮动。需要丢弃的输入比例。
-            noise_shape: 1D 整数张量， 表示将与输入相乘的二进制 dropout 掩层的形状。 
-                例如，如果输入尺寸为 (batch_size, timesteps, features)。然后,希望 dropout 掩层在所有时间步都是一样的， 
-                可以使用 noise_shape=(batch_size, 1, features)。
-            seed: 一个作为随机种子的 Python 整数。
+### Dropout
+    作用：在训练中每次更新时， 将输入单元的按比率随机设置为 0， 这有助于防止过拟合
+
+    使用方式：tf.keras.layers.Dropout(rate, noise_shape=None, seed=None)
+
+    参数：
+        rate: 在 0 和 1 之间浮动。需要丢弃的输入比例。
+        noise_shape: 1D 整数张量， 表示将与输入相乘的二进制 dropout 掩层的形状。 
+            例如，如果输入尺寸为 (batch_size, timesteps, features)。然后,希望 dropout 掩层在所有时间步都是一样的， 
+            可以使用 noise_shape=(batch_size, 1, features)。
+        seed: 一个作为随机种子的 Python 整数。
     
-    Flatten: 将输入展平,即多维数据转换为一维数据，不影响批量大小。
-        tf.keras.layers.Flatten(data_format=None)
-        参数：
-            data_format：一个字符串，其值为 channels_last（默认值）或者 channels_first。它表明输入的维度的顺序。
-            此参数的目的是当模型从一种数据格式切换到另一种数据格式时保留权重顺序。
-            channels_last 对应着尺寸为 (batch, ..., channels) 的输入，
-            channels_first 对应着尺寸为 (batch, channels, ...) 的输入。
-            默认为 image_data_format 的值，你可以在 Keras 的配置文件 ~/.keras/keras.json 中找到它。
-            如果，从未设置过它，那么它将是 channels_last
-        示例：
-            model = Sequential()
-            model.add(Conv2D(64, (3, 3), input_shape=(3, 32, 32), padding='same',))
-            # 现在：model.output_shape == (None, 64, 32, 32)
-            
-            model.add(Flatten())
-            # 现在：model.output_shape == (None, 65536) 64 * 32 * 32 = 65536
+### Flatten
+    作用：将输入展平,即多维数据转换为一维数据，不影响批量大小。
 
-### Keras Model Parameter (Keras 模型参数)
+    使用方式：tf.keras.layers.Flatten(data_format=None)
 
+    参数：
+        data_format：一个字符串，其值为 channels_last（默认值）或者 channels_first。它表明输入的维度的顺序。
+        此参数的目的是当模型从一种数据格式切换到另一种数据格式时保留权重顺序。
+        channels_last 对应着尺寸为 (batch, ..., channels) 的输入，
+        channels_first 对应着尺寸为 (batch, channels, ...) 的输入。
+        默认为 image_data_format 的值，你可以在 Keras 的配置文件 ~/.keras/keras.json 中找到它。
+        如果，从未设置过它，那么它将是 channels_last
+
+    示例：
+        model = Sequential()
+        model.add(Conv2D(64, (3, 3), input_shape=(3, 32, 32), padding='same',))
+        # 现在：model.output_shape == (None, 64, 32, 32)
+        
+        model.add(Flatten())
+        # 现在：model.output_shape == (None, 65536) 64 * 32 * 32 = 65536
+
+## Activation：激活函数 
+内容部分参考了：计算机视觉战队（微信公众号：ComputerVisionGzq），作者：Edison_G 地址：https://cloud.tencent.com/developer/article/1800954
+
+### 使用方式有两种：  
+1, tf.keras.layers.Conv2D(64, (3, 3), activation='elu')  
+2, tf.keras.activations.elu(x, alpha=1.0) 
+
+### 激活函数种类
+激活函数（Activation Function）是一种添加到人工神经网络中的函数，旨在帮助网络学习数据中的复杂模式。类似于人类大脑中基于神经元的模型，激活函数最终决定了要发射给下一个神经元的内容。 
+在人工神经网络中，一个节点的激活函数定义了该节点在给定的输入或输入集合下的输出。标准的计算机芯片电路可以看作是根据输入得到开（1）或关（0）输出的数字电路激活函数。因此，激活函数是确定神经网络输出的数学方程
+
+人工神经元的工作原理
+![img.png](image/activation/nn_pri.png)
+
+数学工作原理
+![img.png](image/activation/nn_pri_math.png)
+
+#### 1 Sigmoid 激活函数
+![img.png](image/activation/sigmoid.png)
+函数表达式：: sigmoid(x) = 1 / (1 + exp(-x))  
+优点：  
+- Sigmoid 函数的输出范围是 0 到 1。由于输出值限定在 0 到 1，因此它对每个神经元的输出进行了归一化；
+- 用于将预测概率作为输出的模型。由于概率的取值范围是 0 到 1，因此 Sigmoid 函数非常合适；
+- 梯度平滑，避免「跳跃」的输出值；
+- 函数是可微的。这意味着可以找到任意两个点的 sigmoid 曲线的斜率；
+- 明确的预测，即非常接近 1 或 0。
+
+缺点
+- 倾向于梯度消失；  
+- 函数输出不是以 0 为中心的，这会降低权重更新的效率；  
+- Sigmoid 函数执行指数运算，计算机运行得较慢。
+
+#### 2 Tanh / 双曲正切激活函数
+![img_1.png](image/activation/tanh.png)
+
+函数表达式：
+![img.png](image/activation/tanh_fun.png)
+
+tanh VS sigmoid
+![img.png](image/activation/sigmoid_vs_tanh.png)
+
+当输入较大或较小时，输出几乎是平滑的并且梯度较小，这不利于权重更新。二者的区别在于输出间隔，tanh 的输出间隔为 1，并且整个函数以 0 为中心，比 sigmoid 函数更好；  
+- 在 tanh 图中，负输入将被强映射为负，而零输入被映射为接近零。
+
+注意：在一般的二元分类问题中，tanh 函数用于隐藏层，而 sigmoid 函数用于输出层，但这并不是固定的，需要根据特定问题进行调整。
+
+#### 3 ReLU 激活函数
+![img_2.png](image/activation/relu.png)
+函数表达式：
+![img_1.png](image/activation/relu_activ.png)
+ReLU 函数是深度学习中较为流行的一种激活函数，相比于 sigmoid 函数和 tanh 函数，它具有如下优点：
+- 当输入为正时，不存在梯度饱和问题。
+- 计算速度快得多。ReLU 函数中只存在线性关系，因此它的计算速度比 sigmoid 和 tanh 更快。
+
+缺点：
+- 当输入为负时，ReLU 完全失效，在正向传播过程中，这不是问题。有些区域很敏感，有些则不敏感。但是在反向传播过程中，如果输入负数，则梯度将完全为零，sigmoid 函数和 tanh 函数也具有相同的问题；
+- ReLU 函数的输出为 0 或正数，这意味着 ReLU 函数不是以 0 为中心的函数。
+
+#### 4 Leaky ReLU 激活函数
+![img_3.png](image/activation/leaky_relu.png)
+
+函数表达式：
+![img_2.png](image/activation/leaky_relu_activ.png)
+
+leaky relu 比 relu 函数更好的地方：
+因为，Leaky ReLU 通过把 x 的非常小的线性分量给予负输入（0.01x）来调整负值的零梯度（zero gradients）问题；
+- leak 有助于扩大 ReLU 函数的范围，通常 a 的值为 0.01 左右；
+- Leaky ReLU 的函数范围是（负无穷到正无穷）。
+
+注意：从理论上讲，Leaky ReLU 具有 ReLU 的所有优点，而且 Dead ReLU 不会有任何问题，但在实际操作中，尚未完全证明 Leaky ReLU 总是比 ReLU 更好。
+
+#### 5 elu 激活函数
+![img_4.png](image/activation/elu_relu_lrelu.png)
+
+函数表达式：
+![img_3.png](image/activation/elu_active.png)
+
+据图可以看出，ELU 具有 ReLU 的所有优点，并且：
+- 没有 Dead ReLU 问题，输出的平均值接近 0，以 0 为中心；
+- ELU 通过减少偏置偏移的影响，使正常梯度更接近于单位自然梯度，从而使均值向零加速学习；
+- ELU 在较小的输入下会饱和至负值，从而减少前向传播的变异和信息。 
+
+一个小问题是它的计算强度更高。与 Leaky ReLU 类似，尽管理论上比 ReLU 要好，但目前在实践中没有充分的证据表明 ELU 总是比 ReLU 好。
+
+#### 6 softmax 激活函数
+![img_5.png](image/activation/softmax.png)
+
+函数表达式：
+![img_4.png](image/activation/softmax_activ.png)
+
+Softmax 是用于多类分类问题的激活函数，在多类分类问题中，超过两个类标签则需要类成员关系。对于长度为 K 的任意实向量，Softmax 可以将其压缩为长度为 K，值在（0，1）范围内，并且向量中元素的总和为 1 的实向量。
+
+Softmax 与正常的 max 函数不同：max 函数仅输出最大值，但 Softmax 确保较小的值具有较小的概率，并且不会直接丢弃。我们可以认为它是 argmax 函数的概率版本或「soft」版本。
+
+Softmax 函数的分母结合了原始输出值的所有因子，这意味着 Softmax 函数获得的各种概率彼此相关。
+
+Softmax 激活函数的主要缺点是：
+- 在零点不可微；
+- 负输入的梯度为零，这意味着对于该区域的激活，权重不会在反向传播期间更新，因此会产生永不激活的死亡神经元。
+
+#### 7 Softplus 激活函数
+![img_6.png](image/activation/swish.png)
+函数表达式： f（x）= ln（1 + exp x）
+
+Softplus 的导数为: f ′(x)= 1/ (1 +exp(−x )) ，也称为 logistic / sigmoid 函数。
+
+Softplus 函数类似于 ReLU 函数，但是相对较平滑，像 ReLU 一样是单侧抑制。它的接受范围很广：(0, + inf)。
+
+#### 8 Swish 激活函数
+![img_7.png](image/activation/softplus.png)
+函数表达式：y = x * sigmoid (x)
+
+Swish 的设计受到了 LSTM 和高速网络中 gating 的 sigmoid 函数使用的启发。我们使用相同的 gating 值来简化 gating 机制，这称为 self-gating。
+
+self-gating 的优点在于它只需要简单的标量输入，而普通的 gating 则需要多个标量输入。这使得诸如 Swish 之类的 self-gated激活函数能够轻松替换以单个标量为输入的激活函数（例如 ReLU），而无需更改隐藏容量或参数数量。
+
+Swish 激活函数的主要优点如下：
+- 「无界性」有助于防止慢速训练期间，梯度逐渐接近 0 并导致饱和；（同时，有界性也是有优势的，因为有界激活函数可以具有很强的正则化，并且较大的负输入问题也能解决）；
+- 导数恒 > 0；
+- 平滑度在优化和泛化中起了重要作用。
+
+### optimizer(优化器)
     暂无
+
+### losses (损失函数)
+    暂无
+
+### regularizers (正则化)
+    暂无
+
+### callback (回调)
+    暂无
+
+
+
+
+
+        
