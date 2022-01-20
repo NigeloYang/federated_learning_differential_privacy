@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 print('训练集数据形状：{}  测试数据集形状：{}'.format(train.shape, test.shape))
 
 
-# # 划分数据集
+# 划分数据集
 def split_data(data, label, ratio=0.2):
   # 把数据的索引乱序
   shuffle_indexes = np.random.permutation(len(data))

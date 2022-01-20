@@ -319,112 +319,6 @@ pred = model.predict([headline_data, additional_data])
 # model.predict({'main_input': headline_data, 'aux_input': additional_data})
 ```
 
-## Layer
-###  Dense（全连接层）
-     tf.keras.layers.Dense(units, activation=None, use_bias=True, kernel_initializer='glorot_uniform',
-        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, activity_regularizer=None,
-        kernel_constraint=None, bias_constraint=None)
-
-    参数：
-        units: 正整数，输出空间维度。
-        activation: 激活函数 (详见 activations)。 若不指定，则不使用激活函数 (即，线性激活: a(x) = x)。
-        use_bias: 布尔值，该层是否使用偏置向量。
-        kernel_initializer: kernel 权值矩阵的初始化器 (详见 initializers)。
-        bias_initializer: 偏置向量的初始化器 (详见 initializers)。
-        kernel_regularizer: 运用到 kernel 权值矩阵的正则化函数 (详见 regularizer)。
-        bias_regularizer: 运用到偏置向量的的正则化函数 (详见 regularizer)。
-        activity_regularizer: 运用到层的输出的正则化函数 (它的 "activation")。 (详见 regularizer)。
-        kernel_constraint: 运用到 kernel 权值矩阵的约束函数 (详见 constraints)。
-        bias_constraint: 运用到偏置向量的约束函数 (详见 constraints)。
-
-```python
-# demo
-import tensorflow as tf
-
-# 创建一个模型，并且采用 shape= (None, 16) 的输入数组, 输出数组为 shape=(None, 32)。注意在第一层之后，你不需要再指定输入的大小了：
-model = tf.keras.models.Sequential()
-model.add(tf.keras.Input(shape=(16,)))
-model.add(tf.keras.layers.Dense(32, activation='relu'))
-model.add(tf.keras.layers.Dense(32))
-print(model.output_shape)  # (None, 32)
-```
-### Conv1D
-    作用：
-
-    函数：tf.keras.layers.Conv1D(
-            filters, kernel_size, strides=1, padding='valid',
-            data_format='channels_last', dilation_rate=1, groups=1,
-            activation=None, use_bias=True, kernel_initializer='glorot_uniform',
-            bias_initializer='zeros', kernel_regularizer=None,
-            bias_regularizer=None, activity_regularizer=None, kernel_constraint=None,
-            bias_constraint=None, **kwargs
-        )
-    
-    参数: 
-        filters:  整数，输出空间的维度（即卷积中输出滤波器的数量）
-        kernel_size:  单个整数的整数或元组列表，指定一维卷积窗口的长度
-        strides:	一个整数或单个整数的元组列表，指定卷积的步长。指定任何 stride 值 != 1 与指定任何 dilation_rate 值 != 1 不兼容。
-        padding:	"valid" 意味着没有填充。 , "same" 导致在输入的左/右或上/下均匀填充零，以使输出具有与输入相同的高度/宽度尺寸。
-                    "causal" 导致因果（扩张）卷积，例如输出[t] 不依赖于输入[t+1:]。在模型不应违反时间顺序的时间数据建模时很有用。
-        data_format:	一个字符串，channels_last（默认）或 channels_first 之一。
-        dilation_rate:	一个整数或单个整数的元组/列表，指定用于扩张卷积的扩张率。
-                        目前，指定任何 dilation_rate 值 != 1 与指定任何 strides 值 != 1 是不兼容的。
-        groups:	 一个正整数，指定输入沿通道轴拆分的组数。每个组分别与 filters / groups filters 进行卷积。
-                输出是沿通道轴的所有组结果的串联。输入通道和过滤器都必须可以按组整除。
-        activation:	要使用的激活功能。如果您未指定任何内容，则不会应用激活
-        use_bias:	bool，层是否使用偏置向量。
-        kernel_initializer:	内核权重矩阵的初始化程序（请参阅 keras.initializers）。默认为“glorot_uniform”。
-        bias_initializer:	偏置向量的初始化程序。 默认为“zero”。
-        kernel_regularizer:	应用于内核权重矩阵的正则化函数
-        bias_regularizer:	应用于偏置向量的正则化函数
-        activity_regularizer:	正则化函数应用于层的输出 (its "activation")
-        kernel_constraint:	应用于核矩阵的约束函数
-        bias_constraint:	应用于偏置向量的约束函数
-
-```python
-# demo
-import  tensorflow as tf
-
-# 输入是 128 个长度的向量，有 10 个时间步长，批量大小为 4
-input_shape = (4, 10, 128)
-x = tf.random.normal(input_shape)
-y = tf.keras.layers.Conv1D(32, 3, activation='relu',input_shape=input_shape[1:])(x)
-print(y.shape)  # (4,8,32)
-```
-
-### Dropout
-    作用：在训练中每次更新时， 将输入单元的按比率随机设置为 0， 这有助于防止过拟合
-
-    使用方式：tf.keras.layers.Dropout(rate, noise_shape=None, seed=None)
-
-    参数：
-        rate: 在 0 和 1 之间浮动。需要丢弃的输入比例。
-        noise_shape: 1D 整数张量， 表示将与输入相乘的二进制 dropout 掩层的形状。 
-            例如，如果输入尺寸为 (batch_size, timesteps, features)。然后,希望 dropout 掩层在所有时间步都是一样的， 
-            可以使用 noise_shape=(batch_size, 1, features)。
-        seed: 一个作为随机种子的 Python 整数。
-    
-### Flatten
-    作用：将输入展平,即多维数据转换为一维数据，不影响批量大小。
-
-    使用方式：tf.keras.layers.Flatten(data_format=None)
-
-    参数：
-        data_format：一个字符串，其值为 channels_last（默认值）或者 channels_first。它表明输入的维度的顺序。
-        此参数的目的是当模型从一种数据格式切换到另一种数据格式时保留权重顺序。
-        channels_last 对应着尺寸为 (batch, ..., channels) 的输入，
-        channels_first 对应着尺寸为 (batch, channels, ...) 的输入。
-        默认为 image_data_format 的值，你可以在 Keras 的配置文件 ~/.keras/keras.json 中找到它。
-        如果，从未设置过它，那么它将是 channels_last
-
-    示例：
-        model = Sequential()
-        model.add(Conv2D(64, (3, 3), input_shape=(3, 32, 32), padding='same',))
-        # 现在：model.output_shape == (None, 64, 32, 32)
-        
-        model.add(Flatten())
-        # 现在：model.output_shape == (None, 65536) 64 * 32 * 32 = 65536
-
 ## Activation：激活函数 
 内容部分参考了：计算机视觉战队（微信公众号：ComputerVisionGzq），作者：Edison_G 地址：https://cloud.tencent.com/developer/article/1800954
 
@@ -546,16 +440,457 @@ Swish 激活函数的主要优点如下：
 - 导数恒 > 0；
 - 平滑度在优化和泛化中起了重要作用。
 
-### optimizer(优化器)
+
+## callback (回调)
     暂无
 
-### losses (损失函数)
+## initializers
     暂无
 
-### regularizers (正则化)
+## Layer
+###  Dense（全连接层）
+     tf.keras.layers.Dense(units, activation=None, use_bias=True, kernel_initializer='glorot_uniform',
+        bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, activity_regularizer=None,
+        kernel_constraint=None, bias_constraint=None)
+
+    参数：
+        units: 正整数，输出空间维度。
+        activation: 激活函数 (详见 activations)。 若不指定，则不使用激活函数 (即，线性激活: a(x) = x)。
+        use_bias: 布尔值，该层是否使用偏置向量。
+        kernel_initializer: kernel 权值矩阵的初始化器 (详见 initializers)。
+        bias_initializer: 偏置向量的初始化器 (详见 initializers)。
+        kernel_regularizer: 运用到 kernel 权值矩阵的正则化函数 (详见 regularizer)。
+        bias_regularizer: 运用到偏置向量的的正则化函数 (详见 regularizer)。
+        activity_regularizer: 运用到层的输出的正则化函数 (它的 "activation")。 (详见 regularizer)。
+        kernel_constraint: 运用到 kernel 权值矩阵的约束函数 (详见 constraints)。
+        bias_constraint: 运用到偏置向量的约束函数 (详见 constraints)。
+
+    输入
+        形如(batch_size, ..., input_dim)的 nD 张量，最常见的情况为(batch_size, input_dim)的 2D 张量
+        
+    输出
+        形如(batch_size, ..., units)的 nD 张量，最常见的情况为(batch_size, units)的 2D 张量
+
+```python
+# demo
+import tensorflow as tf
+
+# 创建一个模型，并且采用 shape= (None, 16) 的输入数组, 输出数组为 shape=(None, 32)。注意在第一层之后，你不需要再指定输入的大小了：
+model = tf.keras.models.Sequential()
+model.add(tf.keras.Input(shape=(16,)))
+model.add(tf.keras.layers.Dense(32, activation='relu'))
+model.add(tf.keras.layers.Dense(32))
+print(model.output_shape)  # (None, 32)
+```
+
+### Conv1D (一维卷积层)
+    作用：
+
+    函数：tf.keras.layers.Conv1D(
+            filters, kernel_size, strides=1, padding='valid',
+            data_format='channels_last', dilation_rate=1, groups=1,
+            activation=None, use_bias=True, kernel_initializer='glorot_uniform',
+            bias_initializer='zeros', kernel_regularizer=None,
+            bias_regularizer=None, activity_regularizer=None, kernel_constraint=None,
+            bias_constraint=None, **kwargs
+        )
+    
+    参数: 
+        filters:  整数，输出空间的维度（即卷积中输出滤波器的数量）
+        kernel_size:  单个整数的整数或元组列表，指定一维卷积窗口的长度
+        strides:	一个整数或单个整数的元组列表，指定卷积的步长。指定任何 stride 值 != 1 与指定任何 dilation_rate 值 != 1 不兼容。
+        padding:	"valid" 意味着没有填充。 , "same" 导致在输入的左/右或上/下均匀填充零，以使输出具有与输入相同的高度/宽度尺寸。
+                    "causal" 导致因果（扩张）卷积，例如输出[t] 不依赖于输入[t+1:]。在模型不应违反时间顺序的时间数据建模时很有用。
+        data_format:	一个字符串，channels_last（默认）或 channels_first 之一。
+        dilation_rate:	一个整数或单个整数的元组/列表，指定用于扩张卷积的扩张率。
+                        目前，指定任何 dilation_rate 值 != 1 与指定任何 strides 值 != 1 是不兼容的。
+        groups:	 一个正整数，指定输入沿通道轴拆分的组数。每个组分别与 filters / groups filters 进行卷积。
+                输出是沿通道轴的所有组结果的串联。输入通道和过滤器都必须可以按组整除。
+        activation:	要使用的激活功能。如果您未指定任何内容，则不会应用激活
+        use_bias:	bool，层是否使用偏置向量。
+        kernel_initializer:	内核权重矩阵的初始化程序（请参阅 keras.initializers）。默认为“glorot_uniform”。
+        bias_initializer:	偏置向量的初始化程序。 默认为“zero”。
+        kernel_regularizer:	应用于内核权重矩阵的正则化函数
+        bias_regularizer:	应用于偏置向量的正则化函数
+        activity_regularizer:	正则化函数应用于层的输出 (its "activation")
+        kernel_constraint:	应用于核矩阵的约束函数
+        bias_constraint:	应用于偏置向量的约束函数
+
+    输入shape
+        形如（samples，steps，input_dim）的3D张量
+        
+    输出shape
+        形如（samples，new_steps，nb_filter）的3D张量，因为有向量填充的原因，steps的值会改变
+
+```python
+# demo
+import  tensorflow as tf
+
+# 输入是 128 个长度的向量，有 10 个时间步长，批量大小为 4
+input_shape = (4, 10, 128)
+x = tf.random.normal(input_shape)
+y = tf.keras.layers.Conv1D(32, 3, activation='relu',input_shape=input_shape[1:])(x)
+print(y.shape)  # (4,8,32)
+```
+
+### conv2D（二维卷积层）
+    作用：二维卷积层，即对图像的空域卷积。该层对二维输入进行滑动窗卷积，当使用该层作为第一层时，应提供input_shape参数。
+        例如input_shape = (128,128,3)代表128*128的彩色RGB图像
+
+    使用方法： 
+        tf.keras.layers.Conv2D(
+            filters, kernel_size, strides=(1, 1), padding='valid',
+            data_format=None, dilation_rate=(1, 1), groups=1, activation=None,
+            use_bias=True, kernel_initializer='glorot_uniform',
+            bias_initializer='zeros', kernel_regularizer=None,
+            bias_regularizer=None, activity_regularizer=None, kernel_constraint=None,
+            bias_constraint=None, **kwargs
+        )
+
+    参数：
+        filters：卷积核的数目（即输出的维度）
+        kernel_size：单个整数或由两个整数构成的list/tuple，卷积核的宽度和长度。
+                    如为单个整数，则表示在各个空间维度的相同长度。
+        strides：单个整数或由两个整数构成的list/tuple，为卷积的步长。如为单个整数，则表示在各个空间维度的相同步长。
+                任何不为1的strides均与任何不为1的dilation_rate均不兼容
+        padding：补0策略，为“valid”, “same” 。“valid”代表只进行有效的卷积，即对边界数据不处理。
+                “same”代表保留边界处的卷积结果，通常会导致输出shape与输入shape相同。
+        activation：激活函数，为预定义的激活函数名（参考激活函数）。
+                如果不指定该参数，将不会使用任何激活函数（即使用线性激活函数：a(x)=x）
+        dilation_rate：单个整数或由两个个整数构成的list/tuple，指定dilated convolution中的膨胀比例。
+                任何不为1的dilation_rate均与任何不为1的strides均不兼容。
+        data_format： 字符串，“channels_first”或“channels_last”之一，代表图像的通道维的位置。
+                该参数是Keras 1.x中的image_dim_ordering，“channels_last”对应原本的“tf”，“channels_first”对应原本的“th”。
+                以128x128的RGB图像为例，“channels_first”应将数据组织为（3,128,128），而“channels_last”应将数据组织为（128,128,3）。
+                该参数的默认值是~/.keras/keras.json中设置的值，若从未设置过，则为“channels_last”。
+        use_bias:  布尔值，是否使用偏置项
+        kernel_initializer：  权值初始化方法，为预定义初始化方法名的字符串，或用于初始化权重的初始化器。参考initializers
+        bias_initializer：  权值初始化方法，为预定义初始化方法名的字符串，或用于初始化权重的初始化器。参考initializers
+        kernel_regularizer：  施加在权重上的正则项，为Regularizer对象
+        bias_regularizer：  施加在偏置向量上的正则项，为Regularizer对象
+        activity_regularizer：  施加在输出上的正则项，为Regularizer对象
+        kernel_constraints：  施加在权重上的约束项，为Constraints对象
+        bias_constraints：  施加在偏置上的约束项，为Constraints对象
+
+    输入shape
+        ‘channels_first’模式下，输入形如（samples,channels，rows，cols）的4D张量
+        ‘channels_last’模式下，输入形如（samples，rows，cols，channels）的4D张量
+        注意这里的输入shape指的是函数内部实现的输入shape，而非函数接口应指定的input_shape，请参考下面提供的例子。
+        
+    输出shape
+        ‘channels_first’模式下，为形如（samples，nb_filter, new_rows, new_cols）的4D张量
+        ‘channels_last’模式下，为形如（samples，new_rows, new_cols，nb_filter）的4D张量
+        输出的行列数可能会因为填充方法而改变
+
+```python
+import tensorflow as tf
+
+# The inputs are 28x28 RGB images with `channels_last` and the batch size is 4.
+input_shape = (4, 28, 28, 3)
+x = tf.random.normal(input_shape)
+y = tf.keras.layers.Conv2D(2, 3, activation='relu', input_shape=input_shape[1:])(x)
+print(y.shape)  # (4,24,24,2)
+
+# With `padding` as "same".
+input_shape = (4, 28, 28, 3)
+x = tf.random.normal(input_shape)
+y = tf.keras.layers.Conv2D(2, 3, activation='relu', padding="same", input_shape=input_shape[1:])(x)
+print(y.shape) # (4,28,28,2)
+
+```
+
+### Dropout 层
+    作用：为输入数据施加Dropout。Dropout将在训练过程中每次更新参数时按一定概率（rate）随机断开输入神经元，Dropout层用于防止过拟合。
+
+    使用方式：tf.keras.layers.Dropout(rate, noise_shape=None, seed=None)
+
+    参数：
+        rate: 在 0 和 1 之间浮动。需要丢弃的输入比例。
+        noise_shape: 1D 整数张量， 表示将与输入相乘的二进制 dropout 掩层的形状。 
+            例如，如果输入尺寸为 (batch_size, timesteps, features)。然后,希望 dropout 掩层在所有时间步都是一样的， 
+            可以使用 noise_shape=(batch_size, 1, features)。
+        seed: 一个作为随机种子的 Python 整数。
+
+### Flatten （平坦层）
+    作用：Flatten层用来将输入“压平”，即把多维的输入一维化，常用在从卷积层到全连接层的过渡。Flatten不影响batch的大小。
+
+    使用方式：tf.keras.layers.Flatten(data_format=None)
+
+    参数：
+        data_format：一个字符串，其值为 channels_last（默认值）或者 channels_first。它表明输入的维度的顺序。
+        此参数的目的是当模型从一种数据格式切换到另一种数据格式时保留权重顺序。
+        channels_last 对应着尺寸为 (batch, ..., channels) 的输入，
+        channels_first 对应着尺寸为 (batch, channels, ...) 的输入。
+        默认为 image_data_format 的值，你可以在 Keras 的配置文件 ~/.keras/keras.json 中找到它。
+        如果，从未设置过它，那么它将是 channels_last
+
+    示例：
+        model = Sequential()
+        model.add(Conv2D(64, (3, 3), input_shape=(3, 32, 32), padding='same',))
+        # 现在：model.output_shape == (None, 64, 32, 32)
+        
+        model.add(Flatten())
+        # 现在：model.output_shape == (None, 65536) 64 * 32 * 32 = 65536
+
+### reshape 层
+    作用：Reshape层用来将输入shape转换为特定的shape
+
+    函数使用：
+        tf.keras.layers.Reshape(target_shape, **kwargs)
+
+    参数
+    target_shape：目标shape，为整数的tuple，不包含样本数目的维度（batch大小）
+
+    输入shape
+        尽管输入形状中的所有维度都必须是已知/固定的。 
+        将此层用作模型中的第一层时，请使用关键字参数 input_shape（整数元组，不包括样本/批量大小轴）。
+    
+    输出shape
+        (batch_size,) + target_shape
+
+```python
+import tensorflow as tf
+
+model = tf.keras.Sequential()
+model.add(tf.keras.layers.Reshape((3, 4), input_shape=(12,)))
+print(model.output_shape)  # shape=(None,3,4)
+```
+
+### embedding (嵌入层)
+    作用：嵌入层将正整数（下标）转换为具有固定大小的向量，如[[4],[20]]->[[0.25,0.1],[0.6,-0.2]] Embedding层只能作为模型的第一层
+
+    函数使用：
+        tf.keras.layers.Embedding(
+            input_dim, output_dim, embeddings_initializer='uniform',
+            embeddings_regularizer=None, activity_regularizer=None,
+            embeddings_constraint=None, mask_zero=False, input_length=None, **kwargs
+        )
+    
+    参数：
+        input_dim： 大或等于0的整数，字典长度，即输入数据最大下标+1
+        output_dim： 大于0的整数，代表全连接嵌入的维度
+        embeddings_initializer:  嵌入矩阵的初始化方法，为预定义初始化方法名的字符串，或用于初始化权重的初始化器。参考initializers
+        embeddings_regularizer:  嵌入矩阵的正则项，为Regularizer对象
+        embeddings_constraint:  嵌入矩阵的约束项，为Constraints对象
+        mask_zero： bool，确定是否将输入中的‘0’看作是应该被忽略的‘填充’（padding）值，该参数在使用递归层处理变长输入时有用。
+                    设置为True的话，模型中后续的层必须都支持masking，否则会抛出异常。如果该值为True，则下标0在字典中不可用，
+                    input_dim应设置为|vocabulary| + 1。
+        input_length： 当输入序列的长度固定时，该值为其长度。如果要在该层后接Flatten层，然后接Dense层，则必须指定该参数，
+                    否则Dense层的输出维度无法自动推断。
+
+    输入shape
+        形如（samples，sequence_length）的2D张量
+        
+    输出shape
+        形如(samples, sequence_length, output_dim)的3D张量
+
+```python
+import tensorflow as tf
+import numpy as np
+
+# 该模型将输入一个大小为 (batch, input_length) 的整数矩阵，输入中的最大整数（即单词索引）不应大于 999（词汇大小）。 
+# 现在 model.output_shape 是 (None, 10, 64)，其中 `None` 是批次维度。
+model = tf.keras.Sequential()
+model.add(tf.keras.layers.Embedding(1000, 64, input_length=10))
+input_array = np.random.randint(1000, size=(32, 10))
+model.compile('rmsprop', 'mse')
+output_array = model.predict(input_array)
+print(output_array.shape) # (32, 10, 64)
+```
+
+### maxPooling1D
+    作用：对时域1D信号进行最大值池化
+
+    函数使用：
+        tf.keras.layers.MaxPool1D(
+            pool_size=2, strides=None, padding='valid',
+            data_format='channels_last', **kwargs
+        )
+    参数
+        pool_size：整数，池化窗口大小
+        strides：整数或None，下采样因子，例如设2将会使得输出shape为输入的一半，若为None则默认值为pool_size。
+        padding：‘valid’或者‘same’。 “valid”意味着没有填充。 “same”导致向左均匀填充 
+        
+    输入shape
+        形如（samples，steps，features）的3D张量
+
+    输出shape
+        形如（samples，downsampled_steps，features）的3D张量
+  
+```python
+import tensorflow as tf
+# demo1
+x = tf.constant([1., 2., 3., 4., 5.])
+x = tf.reshape(x, [1, 5, 1])
+max_pool_1d = tf.keras.layers.MaxPooling1D(pool_size=2,strides=1, padding='valid')
+print(max_pool_1d(x))  # shape = (1,4,1)  array=[[[2],[3],[4],[5]]]
+
+# demo2
+x = tf.constant([1., 2., 3., 4., 5.])
+x = tf.reshape(x, [1, 5, 1])
+max_pool_1d = tf.keras.layers.MaxPooling1D(pool_size=2, strides=1, padding='same')
+print(max_pool_1d(x))  # shape = (1,5,1)  array=[[[2],[3],[4],[5],[5]]]
+```
+
+### maxPooling2D
+    作用：为空域信号施加最大值池化
+
+    函数使用：
+        tf.keras.layers.MaxPool2D(
+            pool_size=(2, 2), strides=None, padding='valid', data_format=None,
+            **kwargs
+        )
+    参数
+        pool_size：整数或长为2的整数tuple，代表在两个方向（竖直，水平）上的下采样因子，
+                    如取（2，2）将使图片在两个维度上均变为原长的一半。为整数意为各个维度值相同且为该数字。
+        strides：整数或长为2的整数tuple，或者None，步长值。
+        border_mode：‘valid’或者‘same’. valid 意味着没有填充。same 导致在输入的左/右或上/下均匀填充，以使输出具有与输入相同的高度/宽度尺寸。
+        data_format：字符串，“channels_first”或“channels_last”之一，代表图像的通道维的位置。
+            该参数是Keras 1.x中的image_dim_ordering，“channels_last”对应原本的“tf”，“channels_first”对应原本的“th”。
+            以128x128的RGB图像为例，“channels_first”应将数据组织为（3,128,128），而“channels_last”应将数据组织为（128,128,3）。
+            该参数的默认值是~/.keras/keras.json中设置的值，若从未设置过，则为“channels_last”。
+    
+    输入shape
+        ‘channels_first’模式下，为形如（samples，channels, rows，cols）的4D张量
+        ‘channels_last’模式下，为形如（samples，rows, cols，channels）的4D张量
+    
+    输出shape
+        ‘channels_first’模式下，为形如（samples，channels, pooled_rows, pooled_cols）的4D张量
+        ‘channels_last’模式下，为形如（samples，pooled_rows, pooled_cols，channels）的4D张量
+```python
+import tensorflow as tf
+
+x = tf.constant([[1., 2., 3.],
+                 [4., 5., 6.],
+                 [7., 8., 9.]])
+x = tf.reshape(x, [1, 3, 3, 1])
+max_pool_2d = tf.keras.layers.MaxPooling2D(pool_size=(2, 2), strides=(1, 1), padding='valid')
+print(max_pool_2d(x)) # shape=(1,1,2,1) array=[[[[6],[8]]]]
+```
+
+### averagePooling1D
+    作用： 对时域1D信号进行平均值池化
+
+    函数使用：
+        tf.keras.layers.AveragePooling1D(
+            pool_size=2, strides=None, padding='valid',
+            data_format='channels_last', **kwargs
+        )
+
+    参数
+        pool_size：整数，池化窗口大小
+        strides：整数或None，下采样因子，例如设2将会使得输出shape为输入的一半，若为None则默认值为pool_size。
+        padding：‘valid’或者‘same’
+    
+    输入shape
+        形如（samples，steps，features）的3D张量
+
+    输出shape
+        形如（samples，downsampled_steps，features）的3D张量
+
+```python
+import tensorflow as tf
+
+x = tf.constant([1., 2., 3., 4., 5.])
+x = tf.reshape(x, [1, 5, 1])
+avg_pool_1d = tf.keras.layers.AveragePooling1D(pool_size=2, strides=1, padding='valid')
+print(avg_pool_1d(x))  # shape=(1,4,1) array=[[[1.5],[2.5],[3.5],[4.5]]]
+```
+
+### averagePooling2D
+    作用：为空域信号施加平均值池化
+
+    函数使用：
+        tf.keras.layers.AveragePooling2D(
+            pool_size=(2, 2), strides=None, padding='valid', data_format=None,
+            **kwargs
+        )
+    
+    参数
+        pool_size：整数或长为2的整数tuple，代表在两个方向（竖直，水平）上的下采样因子，如取（2，2）将使图片在两个维度上均变为原长的一半。为整数意为各个维度值相同且为该数字。
+        strides：整数或长为2的整数tuple，或者None，步长值。
+        border_mode：‘valid’或者‘same’
+        data_format：字符串，“channels_first”或“channels_last”之一，代表图像的通道维的位置。
+
+    输入shape
+        ‘channels_first’模式下，为形如（samples，channels, rows，cols）的4D张量
+        ‘channels_last’模式下，为形如（samples，rows, cols，channels）的4D张量
+        
+    输出shape
+        ‘channels_first’模式下，为形如（samples，channels, pooled_rows, pooled_cols）的4D张量
+        ‘channels_last’模式下，为形如（samples，pooled_rows, pooled_cols，channels）的4D张量
+
+```python
+import tensorflow as tf
+
+x = tf.constant([[1., 2., 3., 4.],
+                 [5., 6., 7., 8.],
+                 [9., 10., 11., 12.]])
+x = tf.reshape(x, [1, 3, 4, 1])
+avg_pool_2d = tf.keras.layers.AveragePooling2D(pool_size=(2, 2), strides=(2, 2), padding='valid')
+print(avg_pool_2d(x))  # shape=(1,1,2,1) aaray=[[[[3.5],[5.5]]]]
+```
+
+### GRU
+    作用：门限循环单元
+
+    函数使用：
+        tf.keras.layers.GRU(
+            units, activation='tanh', recurrent_activation='sigmoid',
+            use_bias=True, kernel_initializer='glorot_uniform',
+            recurrent_initializer='orthogonal',
+            bias_initializer='zeros', kernel_regularizer=None,
+            recurrent_regularizer=None, bias_regularizer=None, activity_regularizer=None,
+            kernel_constraint=None, recurrent_constraint=None, bias_constraint=None,
+            dropout=0.0, recurrent_dropout=0.0, return_sequences=False, return_state=False,
+            go_backwards=False, stateful=False, unroll=False, time_major=False,
+            reset_after=True, **kwargs
+        )
+
+    参数
+        units：输出维度
+        activation：激活函数，为预定义的激活函数名（参考激活函数）
+        use_bias: 布尔值，是否使用偏置项
+        kernel_initializer：权值初始化方法，为预定义初始化方法名的字符串，或用于初始化权重的初始化器。参考initializers
+        recurrent_initializer：循环核的初始化方法，为预定义初始化方法名的字符串，或用于初始化权重的初始化器。参考initializers
+        bias_initializer：权值初始化方法，为预定义初始化方法名的字符串，或用于初始化权重的初始化器。参考initializers
+        kernel_regularizer：施加在权重上的正则项，为Regularizer对象
+        bias_regularizer：施加在偏置向量上的正则项，为Regularizer对象
+        recurrent_regularizer：施加在循环核上的正则项，为Regularizer对象
+        activity_regularizer：施加在输出上的正则项，为Regularizer对象
+        kernel_constraints：施加在权重上的约束项，为Constraints对象
+        recurrent_constraints：施加在循环核上的约束项，为Constraints对象
+        bias_constraints：施加在偏置上的约束项，为Constraints对象
+        dropout：0~1之间的浮点数，控制输入线性变换的神经元断开比例
+        recurrent_dropout：0~1之间的浮点数，控制循环状态的线性变换的神经元断开比例
+
+    参考文献：
+        On the Properties of Neural Machine Translation: Encoder–Decoder Approaches
+        Empirical Evaluation of Gated Recurrent Neural Networks on Sequence Modeling
+        A Theoretically Grounded Application of Dropout in Recurrent Neural Networks 
+```python
+import tensorflow as tf
+
+inputs = tf.random.normal([32, 10, 8])
+gru = tf.keras.layers.GRU(4)
+output = gru(inputs)
+print(output.shape)  # shape=(32,4)
+
+gru = tf.keras.layers.GRU(4, return_sequences=True, return_state=True)
+whole_sequence_output, final_state = gru(inputs)
+print(whole_sequence_output.shape)  # shape=(32,10,4)
+
+print(final_state.shape)  # shape=(32,4)
+
+```
+
+## losses (损失函数)
     暂无
 
-### callback (回调)
+## optimizer(优化器)
+    暂无
+
+## regularizers (正则化)
     暂无
 
 
