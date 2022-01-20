@@ -12,8 +12,18 @@ import tensorflow as tf
 # dataset = tf.data.Dataset.from_tensor_slices((features, labels))
 # print(list(dataset.as_numpy_iterator()))
 
-x = tf.constant([[1., 2., 3., 4.],
-                 [5., 6., 7., 8.],
-                 [9., 10., 11., 12.]])
-x = tf.reshape(x, [1, 3, 4, 1])
-print(x)
+# x = tf.constant([[1., 2., 3., 4.],
+#                  [5., 6., 7., 8.],
+#                  [9., 10., 11., 12.]])
+# x = tf.reshape(x, [1, 3, 4, 1])
+# print(x)
+
+# y_true = [0, 1, 0, 0]
+# y_pred = [-18.6, 0.51, 2.94, -12.8]
+# bce = tf.keras.losses.BinaryCrossentropy(from_logits=True)
+# print(bce(y_true, y_pred).numpy())  # 0.865
+
+y_true = [[[0.]]]
+y_pred = [[[0.5]]]
+loss = tf.keras.losses.binary_crossentropy(y_true, y_pred,from_logits=True)
+print(loss.numpy())

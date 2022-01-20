@@ -1,18 +1,23 @@
 ## Keras简介
+
 Keras是基于TensorFlow和Theano（由加拿大蒙特利尔大学开发的机器学习框架）的深度学习库，是由纯python编写而成的高层神经网络API，也仅支持
 python开发。它是为了支持快速实践而对tensorflow或者Theano的再次封装，让我们可以不用关注过多的底层细节，能够把想法快速转换为结果。它也很
 灵活，且比较容易学。Keras默认的后端为tensorflow，如果想要使用theano可以自行更改。tensorflow和theano都可以使用GPU进行硬件加速，往往
-可以比CPU运算快很多倍。因此如果你的显卡支持cuda的话，建议尽可能利用cuda加速模型训练。（当机器上有可用的GPU时，代码会自动调用GPU 进行并行
-计算。）目前Keras已经被TensorFlow收录，添加到TensorFlow 中，成为其默认的框架，成为TensorFlow官方的高级API。
+可以比CPU运算快很多倍。因此如果你的显卡支持cuda的话，建议尽可能利用cuda加速模型训练。（当机器上有可用的GPU时，代码会自动调用GPU 进行并行 计算。）目前Keras已经被TensorFlow收录，添加到TensorFlow
+中，成为其默认的框架，成为TensorFlow官方的高级API。
 
 ## 环境安装
+
 安装方式：因为笔者使用的 anaconda 对 python 环境进行控制的。所以，先创建了一个 python == 3.8 环境(Windows 10)
+
 1. conda create -n your_env_name python=x.x 例如 conda create -n tf python=3.8
-2. 激活环境 conda activate your_env_name  例如 conda activate tf
+2. 激活环境 conda activate your_env_name 例如 conda activate tf
 3. 进入环境以后输入：pip install tensorflow==2.x.0
 
 ## Keras Moddel
-在 Keras 中有两类主要的模型：Sequential 顺序模型 和 使用函数式 API 的 Model 类模型。 这些模型有许多共同的方法和属性： 
+
+在 Keras 中有两类主要的模型：Sequential 顺序模型 和 使用函数式 API 的 Model 类模型。 这些模型有许多共同的方法和属性：
+
 - model.layers 是包含模型网络层的展平列表。
 - model.inputs 是模型输入张量的列表。
 - model.outputs 是模型输出张量的列表。
@@ -20,14 +25,14 @@ python开发。它是为了支持快速实践而对tensorflow或者Theano的再�
 - model.get_config() 返回包含模型配置信息的字典。
 - model.get_weights() 返回模型中所有权重张量的列表，类型为 Numpy 数组。
 - model.set_weights(weights) 从 Numpy 数组中为模型设置权重。列表中的数组必须与 get_weights() 返回的权重具有相同的尺寸。
-- model.to_json() 以 JSON 字符串的形式返回模型的表示。请注意，该表示不包括权重，仅包含结构。你可以通过以下方式从 JSON 字符串
-    重新实例化同一模型（使用重新初始化的权重）：
+- model.to_json() 以 JSON 字符串的形式返回模型的表示。请注意，该表示不包括权重，仅包含结构。你可以通过以下方式从 JSON 字符串 重新实例化同一模型（使用重新初始化的权重）：
 - model.to_yaml() 以 YAML 字符串的形式返回模型的表示。请注意，该表示不包括权重，只包含结构。
 - model.save_weights(filepath) 将模型权重存储为 HDF5 文件。
-- model.load_weights(filepath, by_name=False): 从 HDF5 文件（由 save_weights 创建）中加载权重。默认情况下，模型的结
-    构应该是不变的。 如果想将权重载入不同的模型（部分层相同）， 设置 by_name=True 来载入那些名字相同的层的权重。
+- model.load_weights(filepath, by_name=False): 从 HDF5 文件（由 save_weights 创建）中加载权重。默认情况下，模型的结 构应该是不变的。
+  如果想将权重载入不同的模型（部分层相同）， 设置 by_name=True 来载入那些名字相同的层的权重。
 
-## Keras Sequential 顺序模型
+## Sequential 顺序模型
+
 创建模型： model = tf.keras.Sequential()
 
 ### model.complie() 编译函数用于配置训练模型
@@ -193,6 +198,7 @@ python开发。它是为了支持快速实践而对tensorflow或者Theano的再�
         ValueError: 如果提供的输入数据与模型的期望数据不匹配，或者有状态模型收到的数量不是批量大小的倍数。
 
 ### 一个案例
+
 ```python
 # 完整的Keras Sequential 顺序模型
 import numpy as np
@@ -228,7 +234,8 @@ score = model.evaluate(x_test, y_test, batch_size=128)
 result = model.predict(x_test)
 ```
 
-## 函数式 API 的 Model 类模型
+## function API 模型
+
 ```python
 # 在函数式 API 中，自己需要给定一些输入张量和输出张量，可以通过以下方式实例化一个 Model：
 
@@ -243,17 +250,17 @@ model = Model(inputs=a, outputs=b)
 # 在多输入或多输出模型的情况下，也可以使用列表：
 model = Model(inputs=[a1, a2], outputs=[b1, b3, b3])
 ```
-函数式 API 的 Model 类模型对应函数参数可以参考 model.Sequential() 顺序模型：model.compile(), model.fit(), mdoel.evaluate(), model.predict() 
+
+函数式 API 的 Model 类模型对应函数参数可以参考 model.Sequential() 顺序模型：model.compile(), model.fit(), mdoel.evaluate(), model.predict()
 
 ### 一个例子
-以下是函数式 API 的一个很好的例子：具有多个输入和输出的模型。函数式 API 使处理大量交织的数据流变得容易。
-在这个例子中，我们试图预测 Twitter 上的一条新闻标题有多少转发和点赞数。模型的主要输入将是新闻标题本身，即一系列词语，
-但是为了增添趣味，我们的模型还添加了其他的辅助输入来接收额外的数据，例如新闻标题的发布的时间等。 
+
+以下是函数式 API 的一个很好的例子：具有多个输入和输出的模型。函数式 API 使处理大量交织的数据流变得容易。 在这个例子中，我们试图预测 Twitter
+上的一条新闻标题有多少转发和点赞数。模型的主要输入将是新闻标题本身，即一系列词语， 但是为了增添趣味，我们的模型还添加了其他的辅助输入来接收额外的数据，例如新闻标题的发布的时间等。
 该模型也将通过两个损失函数进行监督学习。较早地在模型中使用主损失函数（参见loss部分内容），是深度学习模型的一个良好正则方法。
 
 模型结构如下图所示：
 ![函数式 API 案例模型结构](image/function_model_api.png)
-
 
 ```python
 # Coding
@@ -319,15 +326,18 @@ pred = model.predict([headline_data, additional_data])
 # model.predict({'main_input': headline_data, 'aux_input': additional_data})
 ```
 
-## Activation：激活函数 
+## Activation：激活函数
+
 内容部分参考了：计算机视觉战队（微信公众号：ComputerVisionGzq），作者：Edison_G 地址：https://cloud.tencent.com/developer/article/1800954
 
-### 使用方式有两种：  
+### 使用方式有两种：
+
 1, tf.keras.layers.Conv2D(64, (3, 3), activation='elu')  
-2, tf.keras.activations.elu(x, alpha=1.0) 
+2, tf.keras.activations.elu(x, alpha=1.0)
 
 ### 激活函数种类
-激活函数（Activation Function）是一种添加到人工神经网络中的函数，旨在帮助网络学习数据中的复杂模式。类似于人类大脑中基于神经元的模型，激活函数最终决定了要发射给下一个神经元的内容。 
+
+激活函数（Activation Function）是一种添加到人工神经网络中的函数，旨在帮助网络学习数据中的复杂模式。类似于人类大脑中基于神经元的模型，激活函数最终决定了要发射给下一个神经元的内容。
 在人工神经网络中，一个节点的激活函数定义了该节点在给定的输入或输入集合下的输出。标准的计算机芯片电路可以看作是根据输入得到开（1）或关（0）输出的数字电路激活函数。因此，激活函数是确定神经网络输出的数学方程
 
 人工神经元的工作原理
@@ -337,9 +347,11 @@ pred = model.predict([headline_data, additional_data])
 ![img.png](image/activation/nn_pri_math.png)
 
 #### 1 Sigmoid 激活函数
+
 ![img.png](image/activation/sigmoid.png)
 函数表达式：: sigmoid(x) = 1 / (1 + exp(-x))  
-优点：  
+优点：
+
 - Sigmoid 函数的输出范围是 0 到 1。由于输出值限定在 0 到 1，因此它对每个神经元的输出进行了归一化；
 - 用于将预测概率作为输出的模型。由于概率的取值范围是 0 到 1，因此 Sigmoid 函数非常合适；
 - 梯度平滑，避免「跳跃」的输出值；
@@ -347,11 +359,13 @@ pred = model.predict([headline_data, additional_data])
 - 明确的预测，即非常接近 1 或 0。
 
 缺点
-- 倾向于梯度消失；  
-- 函数输出不是以 0 为中心的，这会降低权重更新的效率；  
+
+- 倾向于梯度消失；
+- 函数输出不是以 0 为中心的，这会降低权重更新的效率；
 - Sigmoid 函数执行指数运算，计算机运行得较慢。
 
 #### 2 Tanh / 双曲正切激活函数
+
 ![img_1.png](image/activation/tanh.png)
 
 函数表达式：
@@ -360,50 +374,58 @@ pred = model.predict([headline_data, additional_data])
 tanh VS sigmoid
 ![img.png](image/activation/sigmoid_vs_tanh.png)
 
-当输入较大或较小时，输出几乎是平滑的并且梯度较小，这不利于权重更新。二者的区别在于输出间隔，tanh 的输出间隔为 1，并且整个函数以 0 为中心，比 sigmoid 函数更好；  
+当输入较大或较小时，输出几乎是平滑的并且梯度较小，这不利于权重更新。二者的区别在于输出间隔，tanh 的输出间隔为 1，并且整个函数以 0 为中心，比 sigmoid 函数更好；
+
 - 在 tanh 图中，负输入将被强映射为负，而零输入被映射为接近零。
 
 注意：在一般的二元分类问题中，tanh 函数用于隐藏层，而 sigmoid 函数用于输出层，但这并不是固定的，需要根据特定问题进行调整。
 
 #### 3 ReLU 激活函数
+
 ![img_2.png](image/activation/relu.png)
 函数表达式：
 ![img_1.png](image/activation/relu_activ.png)
 ReLU 函数是深度学习中较为流行的一种激活函数，相比于 sigmoid 函数和 tanh 函数，它具有如下优点：
+
 - 当输入为正时，不存在梯度饱和问题。
 - 计算速度快得多。ReLU 函数中只存在线性关系，因此它的计算速度比 sigmoid 和 tanh 更快。
 
 缺点：
+
 - 当输入为负时，ReLU 完全失效，在正向传播过程中，这不是问题。有些区域很敏感，有些则不敏感。但是在反向传播过程中，如果输入负数，则梯度将完全为零，sigmoid 函数和 tanh 函数也具有相同的问题；
 - ReLU 函数的输出为 0 或正数，这意味着 ReLU 函数不是以 0 为中心的函数。
 
 #### 4 Leaky ReLU 激活函数
+
 ![img_3.png](image/activation/leaky_relu.png)
 
 函数表达式：
 ![img_2.png](image/activation/leaky_relu_activ.png)
 
-leaky relu 比 relu 函数更好的地方：
-因为，Leaky ReLU 通过把 x 的非常小的线性分量给予负输入（0.01x）来调整负值的零梯度（zero gradients）问题；
+leaky relu 比 relu 函数更好的地方： 因为，Leaky ReLU 通过把 x 的非常小的线性分量给予负输入（0.01x）来调整负值的零梯度（zero gradients）问题；
+
 - leak 有助于扩大 ReLU 函数的范围，通常 a 的值为 0.01 左右；
 - Leaky ReLU 的函数范围是（负无穷到正无穷）。
 
 注意：从理论上讲，Leaky ReLU 具有 ReLU 的所有优点，而且 Dead ReLU 不会有任何问题，但在实际操作中，尚未完全证明 Leaky ReLU 总是比 ReLU 更好。
 
 #### 5 elu 激活函数
+
 ![img_4.png](image/activation/elu_relu_lrelu.png)
 
 函数表达式：
 ![img_3.png](image/activation/elu_active.png)
 
 据图可以看出，ELU 具有 ReLU 的所有优点，并且：
+
 - 没有 Dead ReLU 问题，输出的平均值接近 0，以 0 为中心；
 - ELU 通过减少偏置偏移的影响，使正常梯度更接近于单位自然梯度，从而使均值向零加速学习；
-- ELU 在较小的输入下会饱和至负值，从而减少前向传播的变异和信息。 
+- ELU 在较小的输入下会饱和至负值，从而减少前向传播的变异和信息。
 
 一个小问题是它的计算强度更高。与 Leaky ReLU 类似，尽管理论上比 ReLU 要好，但目前在实践中没有充分的证据表明 ELU 总是比 ReLU 好。
 
 #### 6 softmax 激活函数
+
 ![img_5.png](image/activation/softmax.png)
 
 函数表达式：
@@ -416,10 +438,12 @@ Softmax 与正常的 max 函数不同：max 函数仅输出最大值，但 Softm
 Softmax 函数的分母结合了原始输出值的所有因子，这意味着 Softmax 函数获得的各种概率彼此相关。
 
 Softmax 激活函数的主要缺点是：
+
 - 在零点不可微；
 - 负输入的梯度为零，这意味着对于该区域的激活，权重不会在反向传播期间更新，因此会产生永不激活的死亡神经元。
 
 #### 7 Softplus 激活函数
+
 ![img_6.png](image/activation/swish.png)
 函数表达式： f（x）= ln（1 + exp x）
 
@@ -428,27 +452,33 @@ Softplus 的导数为: f ′(x)= 1/ (1 +exp(−x )) ，也称为 logistic / sigm
 Softplus 函数类似于 ReLU 函数，但是相对较平滑，像 ReLU 一样是单侧抑制。它的接受范围很广：(0, + inf)。
 
 #### 8 Swish 激活函数
+
 ![img_7.png](image/activation/softplus.png)
 函数表达式：y = x * sigmoid (x)
 
 Swish 的设计受到了 LSTM 和高速网络中 gating 的 sigmoid 函数使用的启发。我们使用相同的 gating 值来简化 gating 机制，这称为 self-gating。
 
-self-gating 的优点在于它只需要简单的标量输入，而普通的 gating 则需要多个标量输入。这使得诸如 Swish 之类的 self-gated激活函数能够轻松替换以单个标量为输入的激活函数（例如 ReLU），而无需更改隐藏容量或参数数量。
+self-gating 的优点在于它只需要简单的标量输入，而普通的 gating 则需要多个标量输入。这使得诸如 Swish 之类的 self-gated激活函数能够轻松替换以单个标量为输入的激活函数（例如
+ReLU），而无需更改隐藏容量或参数数量。
 
 Swish 激活函数的主要优点如下：
+
 - 「无界性」有助于防止慢速训练期间，梯度逐渐接近 0 并导致饱和；（同时，有界性也是有优势的，因为有界激活函数可以具有很强的正则化，并且较大的负输入问题也能解决）；
 - 导数恒 > 0；
 - 平滑度在优化和泛化中起了重要作用。
 
-
 ## callback (回调)
+
     暂无
 
 ## initializers
+
     暂无
 
 ## Layer
-###  Dense（全连接层）
+
+### Dense（全连接层）
+
      tf.keras.layers.Dense(units, activation=None, use_bias=True, kernel_initializer='glorot_uniform',
         bias_initializer='zeros', kernel_regularizer=None, bias_regularizer=None, activity_regularizer=None,
         kernel_constraint=None, bias_constraint=None)
@@ -484,6 +514,7 @@ print(model.output_shape)  # (None, 32)
 ```
 
 ### Conv1D (一维卷积层)
+
     作用：
 
     函数：tf.keras.layers.Conv1D(
@@ -524,16 +555,17 @@ print(model.output_shape)  # (None, 32)
 
 ```python
 # demo
-import  tensorflow as tf
+import tensorflow as tf
 
 # 输入是 128 个长度的向量，有 10 个时间步长，批量大小为 4
 input_shape = (4, 10, 128)
 x = tf.random.normal(input_shape)
-y = tf.keras.layers.Conv1D(32, 3, activation='relu',input_shape=input_shape[1:])(x)
+y = tf.keras.layers.Conv1D(32, 3, activation='relu', input_shape=input_shape[1:])(x)
 print(y.shape)  # (4,8,32)
 ```
 
 ### conv2D（二维卷积层）
+
     作用：二维卷积层，即对图像的空域卷积。该层对二维输入进行滑动窗卷积，当使用该层作为第一层时，应提供input_shape参数。
         例如input_shape = (128,128,3)代表128*128的彩色RGB图像
 
@@ -595,11 +627,12 @@ print(y.shape)  # (4,24,24,2)
 input_shape = (4, 28, 28, 3)
 x = tf.random.normal(input_shape)
 y = tf.keras.layers.Conv2D(2, 3, activation='relu', padding="same", input_shape=input_shape[1:])(x)
-print(y.shape) # (4,28,28,2)
+print(y.shape)  # (4,28,28,2)
 
 ```
 
 ### Dropout 层
+
     作用：为输入数据施加Dropout。Dropout将在训练过程中每次更新参数时按一定概率（rate）随机断开输入神经元，Dropout层用于防止过拟合。
 
     使用方式：tf.keras.layers.Dropout(rate, noise_shape=None, seed=None)
@@ -612,6 +645,7 @@ print(y.shape) # (4,28,28,2)
         seed: 一个作为随机种子的 Python 整数。
 
 ### Flatten （平坦层）
+
     作用：Flatten层用来将输入“压平”，即把多维的输入一维化，常用在从卷积层到全连接层的过渡。Flatten不影响batch的大小。
 
     使用方式：tf.keras.layers.Flatten(data_format=None)
@@ -633,6 +667,7 @@ print(y.shape) # (4,28,28,2)
         # 现在：model.output_shape == (None, 65536) 64 * 32 * 32 = 65536
 
 ### reshape 层
+
     作用：Reshape层用来将输入shape转换为特定的shape
 
     函数使用：
@@ -657,6 +692,7 @@ print(model.output_shape)  # shape=(None,3,4)
 ```
 
 ### embedding (嵌入层)
+
     作用：嵌入层将正整数（下标）转换为具有固定大小的向量，如[[4],[20]]->[[0.25,0.1],[0.6,-0.2]] Embedding层只能作为模型的第一层
 
     函数使用：
@@ -695,10 +731,11 @@ model.add(tf.keras.layers.Embedding(1000, 64, input_length=10))
 input_array = np.random.randint(1000, size=(32, 10))
 model.compile('rmsprop', 'mse')
 output_array = model.predict(input_array)
-print(output_array.shape) # (32, 10, 64)
+print(output_array.shape)  # (32, 10, 64)
 ```
 
 ### maxPooling1D
+
     作用：对时域1D信号进行最大值池化
 
     函数使用：
@@ -716,13 +753,14 @@ print(output_array.shape) # (32, 10, 64)
 
     输出shape
         形如（samples，downsampled_steps，features）的3D张量
-  
+
 ```python
 import tensorflow as tf
+
 # demo1
 x = tf.constant([1., 2., 3., 4., 5.])
 x = tf.reshape(x, [1, 5, 1])
-max_pool_1d = tf.keras.layers.MaxPooling1D(pool_size=2,strides=1, padding='valid')
+max_pool_1d = tf.keras.layers.MaxPooling1D(pool_size=2, strides=1, padding='valid')
 print(max_pool_1d(x))  # shape = (1,4,1)  array=[[[2],[3],[4],[5]]]
 
 # demo2
@@ -733,6 +771,7 @@ print(max_pool_1d(x))  # shape = (1,5,1)  array=[[[2],[3],[4],[5],[5]]]
 ```
 
 ### maxPooling2D
+
     作用：为空域信号施加最大值池化
 
     函数使用：
@@ -757,6 +796,7 @@ print(max_pool_1d(x))  # shape = (1,5,1)  array=[[[2],[3],[4],[5],[5]]]
     输出shape
         ‘channels_first’模式下，为形如（samples，channels, pooled_rows, pooled_cols）的4D张量
         ‘channels_last’模式下，为形如（samples，pooled_rows, pooled_cols，channels）的4D张量
+
 ```python
 import tensorflow as tf
 
@@ -765,10 +805,11 @@ x = tf.constant([[1., 2., 3.],
                  [7., 8., 9.]])
 x = tf.reshape(x, [1, 3, 3, 1])
 max_pool_2d = tf.keras.layers.MaxPooling2D(pool_size=(2, 2), strides=(1, 1), padding='valid')
-print(max_pool_2d(x)) # shape=(1,1,2,1) array=[[[[6],[8]]]]
+print(max_pool_2d(x))  # shape=(1,1,2,1) array=[[[[6],[8]]]]
 ```
 
 ### averagePooling1D
+
     作用： 对时域1D信号进行平均值池化
 
     函数使用：
@@ -798,6 +839,7 @@ print(avg_pool_1d(x))  # shape=(1,4,1) array=[[[1.5],[2.5],[3.5],[4.5]]]
 ```
 
 ### averagePooling2D
+
     作用：为空域信号施加平均值池化
 
     函数使用：
@@ -832,6 +874,7 @@ print(avg_pool_2d(x))  # shape=(1,1,2,1) aaray=[[[[3.5],[5.5]]]]
 ```
 
 ### GRU
+
     作用：门限循环单元
 
     函数使用：
@@ -868,6 +911,7 @@ print(avg_pool_2d(x))  # shape=(1,1,2,1) aaray=[[[[3.5],[5.5]]]]
         On the Properties of Neural Machine Translation: Encoder–Decoder Approaches
         Empirical Evaluation of Gated Recurrent Neural Networks on Sequence Modeling
         A Theoretically Grounded Application of Dropout in Recurrent Neural Networks 
+
 ```python
 import tensorflow as tf
 
@@ -885,12 +929,116 @@ print(final_state.shape)  # shape=(32,4)
 ```
 
 ## losses (损失函数)
-    暂无
+
+### BinaryCrossentropy
+作用: 计算真实标签和预测标签之间的交叉熵损失。将此交叉熵损失用于二元（0 或 1）分类应用。损失函数需要以下输入：
+- y_true (true label):  0 or 1.
+- y_pred (predicted value): 这是模型的预测，即单个浮点值，它要么代表一个 logit， （即，当 from_logits=True 时值 [-inf, inf]）或 一个概率（即from_logits=False
+  值为[0., 1. ])。
+
+函数使用
+1. tf.keras.losses.BinaryCrossentropy(
+   from_logits=False, label_smoothing=0, axis=-1, reduction=losses_utils.ReductionV2.AUTO, name='binary_crossentropy'
+   )
+2. model.compile(loss=tf.keras.losses.BinaryCrossentropy(from_logits=True))
+
+参数  
+- from_logits：是否将 y_pred 解释为 logit 值的张量。默认情况下，我们假设 y_pred 包含概率（即 [0, 1] 中的值）。
+- label_smoothing：浮动在 [0, 1] 中。为 0 时，不进行平滑处理。当 > 0 时，我们计算预测标签和真实标签的平滑版本之间的损失， 其中平滑将标签压缩到 0.5。较大的 label_smoothing
+  值对应于较重的平滑。
+- axis：计算交叉熵的轴（特征轴）。默认为 -1。
+- reduction：应用于损失的 tf.keras.losses.Reduction 类型。默认值为自动。 AUTO 表示缩减选项将由使用上下文确定。 对于几乎所有情况，这默认为 SUM_OVER_BATCH_SIZE。当与
+  tf.distribute.Strategy 一起使用时，在 tf.keras 编译和拟合等内置训练循环之外，使用 AUTO 或 SUM_OVER_BATCH_SIZE 将引发错误。
+- name：操作的名称。默认为“binary_crossentropy”。
+
+函数表达式  
+![img_2.png](BinaryCrossentropy.png)
+
+```python
+import tensorflow as tf
+
+y_true = [[[0.]]]
+y_pred = [[[0.5]]]
+loss = tf.keras.losses.binary_crossentropy(y_true, y_pred, from_logits=True)
+# loss = -(1/1)*(0 * tf.math.log(0.5) + (1 - 0) * tf.math.log(1 - 0.5))
+loss.numpy()  # 0.974077
+
+# (batch_size = 1, number of samples = 4)
+y_true = [0, 1, 0, 0]
+y_pred = [-18.6, 0.51, 2.94, -12.8]
+bce = tf.keras.losses.BinaryCrossentropy(from_logits=True)
+bce(y_true, y_pred).numpy()  # 0.865
+
+# (batch_size = 2, number of samples = 4)
+y_true = [[0, 1], [0, 0]]
+y_pred = [[-18.6, 0.51], [2.94, -12.8]]
+# Using default 'auto'/'sum_over_batch_size' reduction type.
+bce = tf.keras.losses.BinaryCrossentropy(from_logits=True)
+bce(y_true, y_pred).numpy()  # 0.865
+
+# Using 'sample_weight' attribute
+bce(y_true, y_pred, sample_weight=[0.8, 0.2]).numpy()  # 0.243
+
+# Using 'sum' reduction` type.
+bce = tf.keras.losses.BinaryCrossentropy(from_logits=True, reduction=tf.keras.losses.Reduction.SUM)
+bce(y_true, y_pred).numpy()  # 1.730
+
+# Using 'none' reduction type.
+bce = tf.keras.losses.BinaryCrossentropy(from_logits=True, reduction=tf.keras.losses.Reduction.NONE)
+bce(y_true, y_pred).numpy()  # array=[[0.235],[1.496]]
+```
+### CategoricalCrossentropy
+作用：当有两个或多个标签类时使用此交叉熵损失函数。我们希望以 one_hot 表示形式提供标签。如果您想以整数形式提供标签，请使用 SparseCategoricalCrossentropy 损失。每个特征应该有 # 个类浮点值。 在下面的代码片段中，每个示例都有 # 个类浮点值。 y_pred 和 y_true 的形状都是 [batch_size, num_classes]。
+
+使用方式
+1. tf.keras.losses.CategoricalCrossentropy(
+    from_logits=False, label_smoothing=0, axis=-1,
+    reduction=losses_utils.ReductionV2.AUTO,
+    name='categorical_crossentropy'
+)
+2. model.compile(optimizer='sgd', loss=tf.keras.losses.CategoricalCrossentropy())
+3. model.compile(loss='categorical_crossentropy', optimizer='adam')
+
+参数  
+- from_logits y_pred 是否预期为 logits 张量。默认情况下，我们假设 y_pred 对概率分布进行编码。
+- label_smoothing 浮动在 [0, 1] 中。当 > 0 时，标签值会被平滑，这意味着标签值的置信度会放松。例如，如果为 0.1，则对非目标标签使用 0.1 / num_classes，对目标标签使用 0.9 + 0.1 / num_classes。
+- axis 计算交叉熵的轴（特征轴）。默认为 -1
+- reduction 应用于损失的 tf.keras.losses.Reduction 类型。默认值为自动。 AUTO 表示缩减选项将由使用上下文确定。对于几乎所有情况，这默认为 SUM_OVER_BATCH_SIZE。当与 tf.distribute.Strategy 一起使用时，在 tf.keras 编译和拟合等内置训练循环之外，使用 AUTO 或 SUM_OVER_BATCH_SIZE 将引发错误。
+- name 实例的可选名称。默认为“categorical_crossentropy”。
+
+函数表达式  
+![img.png](CategoricalCrossentropy.png)
+
+```python
+import tensorflow as tf
+
+y_true = [[[0.,1.]]]
+y_pred = [[[0.4,0.6]]]# 假设已经经过了softmax，所以和必须为1
+# loss = -( 0*tf.math.log(0.4) + 1*tf.math.log(0.6) )
+loss = tf.keras.losses.categorical_crossentropy(y_true, y_pred)
+loss.numpy() # 0.5108256
+
+y_true = [[0, 1, 0], [0, 0, 1]]
+y_pred = [[0.05, 0.95, 0], [0.1, 0.8, 0.1]]
+# Using 'auto'/'sum_over_batch_size' reduction type.
+cce = tf.keras.losses.CategoricalCrossentropy()
+cce(y_true, y_pred).numpy() # 1.117
+
+# Calling with 'sample_weight'.
+cce(y_true, y_pred, sample_weight=tf.constant([0.3, 0.7])).numpy() # 0.814
+
+# Using 'sum' reduction type.
+cce = tf.keras.losses.CategoricalCrossentropy(reduction=tf.keras.losses.Reduction.SUM)
+cce(y_true, y_pred).numpy() # 2.354
+
+```
 
 ## optimizer(优化器)
+
     暂无
 
 ## regularizers (正则化)
+
     暂无
 
 
