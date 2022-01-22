@@ -952,7 +952,7 @@ print(final_state.shape)  # shape=(32,4)
 - name：操作的名称。默认为“binary_crossentropy”。
 
 函数表达式  
-![img_2.png](BinaryCrossentropy.png)
+![img_2.png](image/loss/BinaryCrossentropy.png)
 
 ```python
 import tensorflow as tf
@@ -1007,7 +1007,7 @@ bce(y_true, y_pred).numpy()  # array=[[0.235],[1.496]]
 - name 实例的可选名称。默认为“categorical_crossentropy”。
 
 函数表达式  
-![img.png](CategoricalCrossentropy.png)
+![img.png](image/loss/CategoricalCrossentropy.png)
 
 ```python
 import tensorflow as tf

@@ -27,8 +27,9 @@ layer = MyDense(10)
 print(layer(tf.zeros([10, 5])))
 print(layer.trainable_variables)
 
-
 print('-----------------------END--------------------------')
+
+
 # 模型：组合层
 class resnet(tf.keras.Model):
   def __init__(self, kernel_size, filters):
