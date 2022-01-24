@@ -1,14 +1,4 @@
 # Tensorflow 学习记录
-
-## 介绍
-所有学习记录都是基于Keras，Tensorflow 官方文档学习整理而来，仅供学习使用，如有侵权请联系作者删除,欢迎补充说明 ❤️
-
-📧 yangqiantao@outlook.com
-
-Keras: https://keras-zh.readthedocs.io
-
-Tensorflow: https://tensorflow.google.cn/overview
-
 ## keras 篇
 目标：涵盖 Keras 的两个模型 keras.api 激活函数 损失函数 优化器:
 
@@ -28,3 +18,13 @@ Tensorflow: https://tensorflow.google.cn/overview
 主要记录隐私保护相关的内容
 
 目标：暂无内容
+
+## 介绍
+本页的某些部分内容是基于 Google,Keras 创建和共享的作品的修改，并根据知识共享 4.0 署名许可中所述的术语使用。
+仅供学习使用，如有侵权请联系作者删除,欢迎补充说明 ❤️
+
+📧 yangqiantao@outlook.com
+
+Keras: https://keras-zh.readthedocs.io
+
+Tensorflow: https://tensorflow.google.cn
