@@ -66,11 +66,7 @@ def model_fn():
 '''
 tff.learning API允许创建联合平均的许多变体，但还有其他联合算法不能完全适应这个框架。例如，您可能希望添加正则化、裁剪或更复杂的算法
 对于这些更高级的算法，我们必须使用TFF编写自己的自定义算法。在许多情况下，联合算法有 4 个主要组件：
-  1 服务器到客户端广播步骤。
-  2 本地客户端更新步骤。
-  3 客户端到服务器上载步骤。
-  4 服务器更新步骤。
-  
+1 服务器到客户端广播步骤。2 本地客户端更新步骤。3 客户端到服务器上载步骤。4 服务器更新步骤。
 同时，我们应该重写 initialize 和 next 函数。
 '''
 
@@ -167,10 +163,7 @@ def next_fn(server_weights, federated_dataset):
   return server_weights
 
 
-federated_algorithm = tff.templates.IterativeProcess(
-  initialize_fn=initialize_fn,
-  next_fn=next_fn
-)
+federated_algorithm = tff.templates.IterativeProcess(initialize_fn=initialize_fn, next_fn=next_fn)
 
 print('迭代过程和函数的类型签名 federated_algorithm.initialize: ', str(federated_algorithm.initialize.type_signature))
 print('迭代过程和函数的类型签名 federated_algorithm.next: ', str(federated_algorithm.next.type_signature))
@@ -179,6 +172,7 @@ print('迭代过程和函数的类型签名 federated_algorithm.next: ', str(fed
 # 创建一个集中式评估数据集，然后应用用于训练数据的相同预处理
 central_emnist_test = emnist_test.create_tf_dataset_from_all_clients()
 central_emnist_test = preprocess(central_emnist_test)
+
 
 # 接下来，我们编写一个接受服务器状态的函数，并使用 Keras 对测试数据集进行评估
 def evaluate(server_state):
@@ -189,6 +183,7 @@ def evaluate(server_state):
   )
   keras_model.set_weights(server_state)
   keras_model.evaluate(central_emnist_test)
+
 
 # 初始化算法并在测试集上进行评估
 server_state = federated_algorithm.initialize()

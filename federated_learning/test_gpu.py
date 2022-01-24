@@ -10,7 +10,7 @@ TF_CPP_MIN_LOG_LEVEL 取值 3 ： 屏蔽通知信息、警告信息和报错信�
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 # 是否开启 GPU
-# os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 import tensorflow as tf
 from tensorflow.python.client import device_lib
@@ -22,3 +22,7 @@ print('打印 gpu 是否可用：', tf.test.is_gpu_available())
 print('------------------------------------')
 
 print('打印gpu 设备：', device_lib.list_local_devices())
+print('------------------------------------')
+
+print('打印GPU 设备：', tf.config.list_physical_devices('GPU'))
+print('打印CPU 设备：', tf.config.list_physical_devices('CPU'))
