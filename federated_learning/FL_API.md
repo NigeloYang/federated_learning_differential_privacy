@@ -132,19 +132,67 @@ print(foo.type_signature)
 print(foo([1, 4, 7]))
 # ({int32}@CLIENTS -> {int32}@CLIENTS)
 # [<tf.Tensor: shape=(), dtype=int32, numpy=3>, <tf.Tensor: shape=(), dtype=int32, numpy=6>, <tf.Tensor: shape=(), dtype=int32, numpy=9>]
-
 ```
 
 
 #### tff.federated_zip
+作用  
+将联合值的 N 元组转换为联合 N 元组值。  
+
+函数  
+tff.federated_zip(
+    value
+)
+
+参数  
+value	TFF 命名元组类型的值，其元素是具有相同位置的联合值。  
+
+返回  
+与 value 的成员放置在同一位置的联合值，其中每个成员组件都是一个命名元组，由 value 元素的相应成员组件组成。
 
 
+#### tff.federated_map
+作用  
+使用给定函数 fn 逐点映射 TFF 序列值。
 
+函数  
+tff.sequence_map(
+    fn, arg
+)
+
+参数  
+fn  逐点应用于 arg 元素的映射函数。  
+arg 一个 TFF 类型的值，它可以是一个序列，也可以是一个联合序列。
+
+返回  
+将 fn 逐点应用于 arg 的每个元素的序列，或者如果 arg 是联合的，则为联合序列，其结果是在每个位置本地且独立地在成员序列上调用 sequence_map。
+
+```python
+import tensorflow as tf
+import tensorflow_federated as tff
+
+@tff.tf_computation(tf.int32)
+def add_half(x):
+  # tf 代码封装在tff.tf_computation装饰器中
+  return tf.add(x, 2)
+
+
+print(add_half.type_signature) # (int32 -> int32)
+
+
+@tff.federated_computation(tff.type_at_clients(tf.int32))
+def foo(x):
+  return tff.federated_map(add_half, x)
+
+print(foo.type_signature)
+print(foo([1, 4, 7]))
+# ({int32}@CLIENTS -> {int32}@CLIENTS)
+# [<tf.Tensor: shape=(), dtype=int32, numpy=3>, <tf.Tensor: shape=(), dtype=int32, numpy=6>, <tf.Tensor: shape=(), dtype=int32, numpy=9>]
+```
 
 #### tff.tf_computation  
 作用  
 将 Python 函数和 defuns 装饰为 TFF TensorFlow 计算。
-
 
 ```python
 import tensorflow as tf

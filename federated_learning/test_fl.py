@@ -34,3 +34,10 @@ def foo(x):
 
 print(foo.type_signature)
 print(foo([1, 4, 7]))
+
+@tff.federated_computation(tff.TensorType(tf.int32))
+def federatedmap(x):
+  return tff.federated_map(x)
+
+print(federatedmap.type_signature)
+print(federatedmap([1, 4, 7]))
