@@ -14,6 +14,11 @@ python开发。它是为了支持快速实践而对tensorflow或者Theano的再�
 2. 激活环境 conda activate your_env_name 例如 conda activate tf
 3. 进入环境以后输入：pip install tensorflow==2.x.0
 
+## 文件介绍
+- demo 主要记录学习案例
+- data 用于存放数据集
+- image 存放介绍文档中的 image
+
 ## Keras Moddel
 
 在 Keras 中有两类主要的模型：Sequential 顺序模型 和 使用函数式 API 的 Model 类模型。 这些模型有许多共同的方法和属性：

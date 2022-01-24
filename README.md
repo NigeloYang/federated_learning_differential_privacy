@@ -10,19 +10,19 @@ Keras: https://keras-zh.readthedocs.io
 Tensorflow: https://tensorflow.google.cn/overview
 
 ## keras 篇
-目标：涵盖 Keras 的两个模型、API、激活函数、损失函数:
+目标：涵盖 Keras 的两个模型 keras.api 激活函数 损失函数 优化器:
 
-完成：两个模型，部分API
+完成：两个模型 部分API 激活函数 损失函数
 
 ## tensorflow 篇
 目标：Tensorflow基础知识、Tensorflow.API、Tensorflow 案例 
 
-完成：暂无内容
+完成：增加 tf.API, 案例
 
 ## Federated Learning篇  
 目标：TFF模型学习、TFF 案例、自定义　FL　模型
 
-完成：部分案例，部分　FL、TFF知识
+完成：部分案例，部分 TFF.api 知识
 
 ## Privacy 篇
 主要记录隐私保护相关的内容
