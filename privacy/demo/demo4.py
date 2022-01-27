@@ -1,14 +1,12 @@
 ''' 差分隐私的属性
 1、顺序组成（Sequential composition）
-如果 F1(x) 满足 ϵ1 / epsilon_1 并且 F2(x) 满足 ϵ2 / epsilon_2
+如果 F1(x) 满足 ϵ1 / epsilon1 并且 F2(x) 满足 ϵ2 / epsilon2
 则释放两个结果的机制 G(x) = (F1(x), F2(x)) 满足 ϵ1 + ϵ2
 顺序组合是差分隐私的重要属性，因为它可以设计出多次查阅数据的算法。
 
 2、平行组合（Parallel composition）
 
-
 3、后处理（Post processing）
-
 
 '''
 import pandas as pd
@@ -50,7 +48,7 @@ plt.legend()
 plt.show()
 
 #
-names = ['Age', 'Workclass', 'fnlwgt', 'Education', 'Education_Num', 'Marital_Status', 'Occupation', 'Relationship',
+names = ['Age', 'work_class', 'fnlwgt', 'Education', 'Education_Num', 'Marital_Status', 'Occupation', 'Relationship',
          'Race', 'Sex', 'Capital_Gain', 'Capital_Loss', 'Hours_per_week', 'Country', 'income']
 
 # 获取原始数据集
