@@ -1,10 +1,3 @@
-'''
-复现论文
-Abadi, M., Chu, A., Goodfellow, I. J., McMahan, H. B., Mironov, I., Talwar, K., & Zhang, L. (2016).
-Deep Learning with Differential Privacy
-https://doi.org/10.1145/2976749.2978318
-'''
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function

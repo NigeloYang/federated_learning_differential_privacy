@@ -1,6 +1,7 @@
 ### tf.Variable() 
 作用：创建变量
-> 使用   
+
+函数使用     
 tf.Variable(
         initial_value=None, trainable=None, validate_shape=True, caching_device=None,
         name=None, variable_def=None, dtype=None, import_scope=None, constraint=None,
@@ -56,9 +57,6 @@ with tf.compat.v1.Session() as sess:
   print(v5.eval())
 ```
 
-
-
-
 ### tf.constant()
 作用: 从类似张量的对象创建常量张量  
 
@@ -90,7 +88,6 @@ print(c3)  # tf.Tensor([1. 2. 3. 4. 5. 6.], shape=(6,), dtype=float64)
 c4 = tf.constant([1, 2, 3, 4, 5, 6], shape=[2, 3])
 print(c4)  # tf.Tensor([[1 2 3], [4 5 6]], shape=(2, 3), dtype=int32)
 ```
-
 
 ### tf.constant_initializer()
 作用：生成具有常量值的张量的初始值设定项
@@ -202,4 +199,189 @@ print(ta.read(0))  # tf.Tensor(10.0, shape=(), dtype=float32)
 print(ta.read(1))  # tf.Tensor(20.0, shape=(), dtype=float32)
 print(ta.read(2))  # tf.Tensor(30.0, shape=(), dtype=float32)
 print(ta.stack())  # tf.Tensor([10. 20. 30.], shape=(3,), dtype=float32)
+```
+
+### tf.GradientTape()
+作用：一般用来进行梯度下降使用
+
+函数  
+tf.GradientTape(
+    persistent=False, watch_accessed_variables=True
+)
+
+参数  
+- persistent	布尔值控制是否创建持久性渐变磁带。默认情况下为 False，这意味着最多可以对此对象的 gradient（） 方法进行一次调用。  
+- watch_accessed_variables	布尔值控制磁带在磁带处于活动状态时是否自动访问任何（可训练的）变量。默认值为 True 含义梯度，可以从磁带中通过读取可训练的 .如果 False 用户必须显式表示他们想要从中请求渐变的任何 s。watchVariablewatchVariable
+
+```python
+# 案例 计算 y = x * x 的梯度  x = 3.0
+import tensorflow as tf
+
+x = tf.constant(3.0)
+with tf.GradientTape() as g:
+  g.watch(x)
+  y = x * x
+dy_dx = g.gradient(y, x)
+print(dy_dx)  # tf.Tensor(6.0, shape=(), dtype=float32)
+
+# GradientTapes 可以嵌套以计算高阶导数。例如
+x = tf.constant(5.0)
+with tf.GradientTape() as g:
+  g.watch(x)
+  with tf.GradientTape() as gg:
+    gg.watch(x)
+    y = x * x
+  dy_dx = gg.gradient(y, x)  # dy_dx = 2 * x
+d2y_dx2 = g.gradient(dy_dx, x)  # d2y_dx2 = 2
+print(dy_dx)  # tf.Tensor(10.0, shape=(), dtype=float32)
+print(d2y_dx2)  # tf.Tensor(2.0, shape=(), dtype=float32)
+
+# 默认情况下，GradientTape 持有的资源会在 GradientTape.gradient（）方法被调用后立即释放。
+# 要在同一计算中计算多个梯度，请创建持久性梯度磁带。这允许多次调用 gradient（） 方法，
+# 因为在对磁带对象进行垃圾回收时会释放资源。例如：
+x = tf.constant(3.0)
+with tf.GradientTape(persistent=True) as g:
+  g.watch(x)
+  y = x * x
+  z = y * y
+dz_dx = g.gradient(z, x)  # (4*x^3 at x = 3)
+print(dz_dx)  # tf.Tensor(108.0, shape=(), dtype=float32)
+dy_dx = g.gradient(y, x)
+print(dy_dx) # tf.Tensor(6.0, shape=(), dtype=float32)
+
+# 默认情况下，GradientTape 将自动监视在上下文中访问的任何可训练变量。
+# 如果要对监视的变量进行细粒度控制，可以通过传递到磁带构造函数来禁用自动跟踪：watch_accessed_variables=False
+x = tf.Variable(2.0)
+w = tf.Variable(5.0)
+with tf.GradientTape(watch_accessed_variables=False, persistent=True) as tape:
+  tape.watch(x)
+  y = x ** 2  # Gradients will be available for `x`.
+  z = w ** 3  # No gradients will be available as `w` isn't being watched.
+dy_dx = tape.gradient(y, x)
+print(dy_dx) # tf.Tensor(4.0, shape=(), dtype=float32)
+
+# No gradients will be available as `w` isn't being watched.
+dz_dy = tape.gradient(z, w)
+print(dz_dy) # None
+
+with tf.GradientTape(watch_accessed_variables=False, persistent=True) as tape:
+  tape.watch(x)
+  tape.watch(w)
+  y = x ** 2  # Gradients will be available for `x`.
+  z = w ** 3  # Gradients will be available for `w`.
+dy_dx_2 = tape.gradient(y, x)
+print(dy_dx_2) # tf.Tensor(4.0, shape=(), dtype=float32)
+
+# No gradients will be available as `w` isn't being watched.
+dz_dy_2 = tape.gradient(z, w)
+print(dz_dy_2) # tf.Tensor(75.0, shape=(), dtype=float32)
+```
+
+### tf.argsort
+
+```python
+import tensorflow as tf
+```
+
+
+
+### tf.one_hot
+作用：函数实现用独热码表示标签  
+
+函数  
+tf.one_hot(
+    indices, depth, on_value=None, off_value=None, axis=None, dtype=None, name=None
+)
+
+注意事项  
+由索引表示的位置取值，而所有其他位置取值。i`ndiceson_valueoff_value`  
+on_value并且必须具有匹配的数据类型。如果还提供了，则它们必须与 指定的数据类型相同。`off_value dtype dtype`  
+如果未提供，它将默认为具有类型的值：`on_value 1 dtype`
+如果未提供，它将默认为具有类型的值：`off_value 0 dtype` 
+如果输入是秩，则输出将具有秩。新轴是在尺寸处创建的（缺省值：新轴附加在末尾）。`indices N N+1 axis`  
+如果是标量，则输出形状将是长度的向量`indices depth`  
+如果 是长度的向量，则输出形状将为：`indices features`  
+
+参数  
+- indices	A 指数。Tensor
+- depth	定义一个热维度深度的标量。
+- on_value	一个标量，用于定义在 以下情况下要在输出中填充的值。（默认值：1）indices[j] = i
+- off_value	一个标量，用于定义在 以下情况下要在输出中填充的值。（默认值：0）indices[j] != i
+- axis	要填充的轴（默认：-1，最内侧的新轴）。
+- dtype	输出张量的数据类型。
+- name	操作的名称（可选）。
+
+```python
+import tensorflow as tf
+
+indices = [0, 1, 2]
+depth = 3
+tf.one_hot(indices, depth)  # output: [3 x 3]
+# [[1., 0., 0.],
+#  [0., 1., 0.],
+#  [0., 0., 1.]]
+
+classes = 3
+labels = tf.constant([1, 0, 2])  # 输入的元素值最小为0，最大为2
+output = tf.one_hot(labels, depth=classes)
+print("result of labels1:", output)
+print("\n")
+# result of labels1: tf.Tensor(
+# [[0. 1. 0.]
+#  [1. 0. 0.]
+#  [0. 0. 1.]], shape=(3, 3), dtype=float32)
+
+indices = [0, 2, -1, 1]
+depth = 3
+tf.one_hot(indices, depth,
+           on_value=5.0, off_value=0.0,
+           axis=-1)  # output: [4 x 3]
+# [[5.0, 0.0, 0.0],  # one_hot(0)
+#  [0.0, 0.0, 5.0],  # one_hot(2)
+#  [0.0, 0.0, 0.0],  # one_hot(-1)
+#  [0.0, 5.0, 0.0]]  # one_hot(1)
+
+indices = [[0, 2], [1, -1]]
+depth = 3
+tf.one_hot(indices, depth,
+           on_value=1.0, off_value=0.0,
+           axis=-1)  # output: [2 x 2 x 3]
+# [[[1.0, 0.0, 0.0],   # one_hot(0)
+#   [0.0, 0.0, 1.0]],  # one_hot(2)
+#  [[0.0, 1.0, 0.0],   # one_hot(1)
+#   [0.0, 0.0, 0.0]]]  # one_hot(-1)
+
+indices = tf.ragged.constant([[0, 1], [2]])
+depth = 3
+tf.one_hot(indices, depth)  # output: [2 x None x 3]
+# [[[1., 0., 0.],
+#   [0., 1., 0.]],
+#  [[0., 0., 1.]]]
+```
+
+### tf.cast
+作用：将张量转换为新类型
+
+函数  
+tf.cast(
+    x, dtype, name=None
+)
+
+参数  
+- x 输入的数据
+- dtype 要转换的数据类型
+- name 给函数的定义名称
+
+```python
+import tensorflow as tf
+
+x = tf.constant([1.8, 2.2], dtype=tf.float32)
+tf.cast(x, tf.int32) # tf.Tensor([1 2], shape=(2,), dtype=int32)
+```
+
+
+### tf.fill
+
+```python
+import tensorflow as tf
 ```
