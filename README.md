@@ -1,8 +1,4 @@
 # Tensorflow 学习记录
-## keras 篇
-目标：涵盖 Keras 的两个模型 keras.api 激活函数 损失函数 优化器:
-
-完成：两个模型 部分API 激活函数 损失函数
 
 ## tensorflow 篇
 目标：Tensorflow基础知识、Tensorflow.API、Tensorflow 案例 
