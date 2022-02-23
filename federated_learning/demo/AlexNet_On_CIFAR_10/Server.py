@@ -29,10 +29,10 @@ CLIENT_RATIO_PER_ROUND = 0.12
 epoch = 360
 
 
-#### CREATE CLIENT AND LOAD DATASET ####
+# CREATE CLIENT AND LOAD DATASET ####
 client = buildClients(CLIENT_NUMBER)
 
-#### BEGIN TRAINING ####
+# BEGIN TRAINING ####
 global_vars = client.get_client_vars()
 for ep in range(epoch):
     # We are going to sum up active clients' vars at each epoch
@@ -68,5 +68,5 @@ for ep in range(epoch):
     run_global_test(client, global_vars, test_num=600)
 
 
-#### FINAL TEST ####
+# FINAL TEST ####
 run_global_test(client, global_vars, test_num=10000)

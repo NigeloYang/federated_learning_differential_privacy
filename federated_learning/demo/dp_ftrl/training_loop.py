@@ -28,23 +28,20 @@ from utils import utils_impl
 from tensorboard.plugins.hparams import api as hp
 
 
-def _setup_outputs(root_output_dir: str, experiment_name: str,
-                   hparam_dict: Dict[str, Any]):
+def _setup_outputs(root_output_dir: str, experiment_name: str, hparam_dict: Dict[str, Any]):
   """Set up directories for experiment loops, write hyperparameters to disk."""
 
   if not experiment_name:
     raise ValueError('experiment_name must be specified.')
 
-  program_state_dir = os.path.join(root_output_dir, 'checkpoints',
-                                   experiment_name)
+  program_state_dir = os.path.join(root_output_dir, 'checkpoints', experiment_name)
   program_state_mngr = tff.program.FileProgramStateManager(program_state_dir)
 
   logging_mngr = tff.program.LoggingReleaseManager()
 
   results_dir = os.path.join(root_output_dir, 'results', experiment_name)
   csv_file = os.path.join(results_dir, 'experiment.metrics.csv')
-  metrics_mngr = tff.program.CSVFileReleaseManager(
-      file_path=csv_file, key_fieldname='round_num')
+  metrics_mngr = tff.program.CSVFileReleaseManager(file_path=csv_file, key_fieldname='round_num')
 
   summary_logdir = os.path.join(root_output_dir, 'logdir', experiment_name)
   tensorboard_mngr = tff.program.TensorboardReleaseManager(summary_logdir)
@@ -71,8 +68,7 @@ def _write_metrics(metrics_mngrs, metrics, round_num):
     raise TypeError('metrics should be type `dict`.')
   if not isinstance(round_num, int):
     raise TypeError('round_num should be type `int`.')
-  logging.info('Metrics at round {:d}:\n{!s}'.format(round_num,
-                                                     pprint.pformat(metrics)))
+  logging.info('Metrics at round {:d}:\n{!s}'.format(round_num, pprint.pformat(metrics)))
   for metrics_mngr in metrics_mngrs:
     metrics_mngr.release(metrics, round_num)
 
@@ -258,7 +254,8 @@ class ClientIDShuffler(object):
 
   def __init__(self,
                clients_per_round: int,
-               client_data: tff.simulation.datasets.ClientData,
+               # client_data: tff.simulation.datasets.ClientData,
+               client_data: tff.simulation.datasets.gldv2.ClientData,
                drop_remainder: bool = True):
     self._client_ids = list(client_data.client_ids)
     self._clients_per_round = clients_per_round

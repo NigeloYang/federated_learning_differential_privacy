@@ -82,26 +82,26 @@ def model_fn():
 
 @tf.function
 def client_update(model, dataset, server_weights, clients_optimizer):
-  # Initialize the client model with the current server weights.
+  # 使用当前服务器权重初始化客户端模型
   client_weights = model.trainable_variables
   
-  # Assign the server weights to the client model.
+  # 将服务器权重分配给客户端模型。
   tf.nest.map_structure(lambda x, y: x.assign(y), client_weights, server_weights)
   
-  # initiablize the client optimizer
+  # 初始化客户端优化器
   trainable_tensor_specs = tf.nest.map_structure(lambda v: tf.TensorSpec(v.shape, v.dtype), client_weights)
   optimizer_state = clients_optimizer.initialize(trainable_tensor_specs)
   
-  # Use the client_optimizer to update the local model.
+  # 使用 client_optimizer 更新本地模型。
   for batch in iter(dataset):
     with tf.GradientTape() as tape:
-      # Compute a forward pass on the batch of data.
+      # 计算这批数据的前向传递。
       outputs = model.forward_pass(batch)
     
-    # Compute the corresponding gradient.
+    # 计算相应的梯度。
     grads = tape.gradient(outputs.loss, client_weights)
     
-    # Apply the gradient using a client optimizer.
+    # 使用客户端优化器应用梯度
     optimizer_state, updated_weights = clients_optimizer.next(optimizer_state, client_weights, grads)
     tf.nest.map_structure(lambda a, b: a.assign(b), client_weights, updated_weights)
   
@@ -116,8 +116,6 @@ class ServerState(object):
 
 
 ''' Updates the server model weights. '''
-
-
 @tf.function
 def server_update(server_state, mean_model_delta, server_optimizer):
   # Use aggregated negative model delta as pseudo gradient.
@@ -161,7 +159,7 @@ def server_init_tff():
   return tff.federated_value(server_init(), tff.SERVER)
 
 
-# 3. One round of computation and communication.
+# 3 一轮计算和通信
 server_state_type = server_init.type_signature.result
 print('server_state_type:\n', server_state_type.formatted_representation())
 
@@ -169,7 +167,7 @@ trainable_weights_type = server_state_type.trainable_weights
 print('trainable_weights_type:\n', trainable_weights_type.formatted_representation())
 
 
-# 3-1. Wrap server and client TF blocks with `tff.tf_computation`.
+# 3-1. 使用 `tff.tf_computation` 包装服务器和客户端 TF 块。
 @tff.tf_computation(server_state_type, trainable_weights_type)
 def server_update_fn(server_state, model_delta):
   return server_update(server_state, model_delta, server_optimizer)
@@ -186,23 +184,23 @@ def client_update_fn(dataset, server_weights):
   return client_update(model, dataset, server_weights, client_optimizer)
 
 
-# 3-2. Orchestration with `tff.federated_computation`.
+# 3-2. 使用“tff.federated_computation”进行编排。
 federated_server_type = tff.FederatedType(server_state_type, tff.SERVER)
 federated_dataset_type = tff.FederatedType(tf_dataset_type, tff.CLIENTS)
 
 
 @tff.federated_computation(federated_server_type, federated_dataset_type)
 def run_one_round(server_state, federated_dataset):
-  # Server-to-client broadcast.
+  # 1 Server-to-client broadcast.
   server_weights_at_client = tff.federated_broadcast(server_state.trainable_weights)
   
-  # Local client update.
+  # 2 Local client update.
   model_deltas = tff.federated_map(client_update_fn, (federated_dataset, server_weights_at_client))
   
-  # Client-to-server upload and aggregation.
+  # 3 Client-to-server upload and aggregation.
   mean_model_delta = tff.federated_mean(model_deltas)
   
-  # Server update.
+  # 4 Server update.
   server_state = tff.federated_map(server_update_fn, (server_state, mean_model_delta))
   
   return server_state

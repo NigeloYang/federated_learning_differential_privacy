@@ -81,7 +81,7 @@ model.summary()
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
 # 训练模型
-history = model.fit(partial_x_train, partial_y_train, epochs=40, batch_size=512, validation_data=(x_val, y_val),
+history = model.fit(partial_x_train, partial_y_train, epochs=100, batch_size=512, validation_data=(x_val, y_val),
                     verbose=1)
 
 # 评估模型

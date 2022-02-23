@@ -12,7 +12,7 @@ emnist_train, emnist_test = tff.simulation.datasets.emnist.load_data()
 print('总共有多少个客户端：', len(emnist_train.client_ids))
 print('第一个客户端有多少数据：', len(emnist_train.client_ids[0]))
 
-NUM_CLIENTS = 10
+NUM_CLIENTS = 100
 BATCH_SIZE = 20
 
 
@@ -32,24 +32,24 @@ federated_train_data = [preprocess(emnist_train.create_tf_dataset_for_client(x))
 
 # 创建模型
 def create_keras_model():
-  main_input = tf.keras.Input(shape=(784,), dtype='int32', name='main_input')
-  dense1 = tf.keras.layers.Dense(256, activation='relu')(main_input)
-  dropout1 = tf.keras.layers.Dropout(0.2)(dense1)
-  dense2 = tf.keras.layers.Dense(128, activation='relu')(dropout1)
-  dropout2 = tf.keras.layers.Dropout(0.2)(dense2)
-  dense3 = tf.keras.layers.Dense(64, activation='relu')(dropout2)
-  output = tf.keras.layers.Dense(10, activation='relu')(dense3)
+  # main_input = tf.keras.Input(shape=(784,), dtype='int32', name='main_input')
+  # dense1 = tf.keras.layers.Dense(256, activation='relu')(main_input)
+  # dropout1 = tf.keras.layers.Dropout(0.2)(dense1)
+  # dense2 = tf.keras.layers.Dense(128, activation='relu')(dropout1)
+  # dropout2 = tf.keras.layers.Dropout(0.2)(dense2)
+  # dense3 = tf.keras.layers.Dense(64, activation='relu')(dropout2)
+  # output = tf.keras.layers.Dense(10, activation='relu')(dense3)
+  #
+  # return tf.keras.models.Model(inputs=main_input, outputs=output)
   
-  return tf.keras.models.Model(inputs=main_input, outputs=output)
-  
-  # initializer = tf.keras.initializers.GlorotNormal(seed=0)
-  # return tf.keras.models.Sequential([
-  #   tf.keras.layers.Input(shape=(784,)),
-  #   tf.keras.layers.Dense(256, kernel_initializer=initializer),
-  #   tf.keras.layers.Dense(128, kernel_initializer=initializer),
-  #   tf.keras.layers.Dense(10, kernel_initializer=initializer),
-  #   tf.keras.layers.Softmax(),
-  # ])
+  initializer = tf.keras.initializers.GlorotNormal(seed=0)
+  return tf.keras.models.Sequential([
+    tf.keras.layers.Input(shape=(784,)),
+    tf.keras.layers.Dense(256, kernel_initializer=initializer),
+    tf.keras.layers.Dense(128, kernel_initializer=initializer),
+    tf.keras.layers.Dense(10, kernel_initializer=initializer),
+    tf.keras.layers.Softmax(),
+  ])
 
 
 def model_fn():

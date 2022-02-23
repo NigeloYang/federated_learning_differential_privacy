@@ -1,3 +1,10 @@
+'''os.environ[" xxxxxx "]='x'
+
+TF_CPP_MIN_LOG_LEVEL 取值 0 ： 0也是默认值，输出所有信息
+TF_CPP_MIN_LOG_LEVEL 取值 1 ： 屏蔽通知信息
+TF_CPP_MIN_LOG_LEVEL 取值 2 ： 屏蔽通知信息和警告信息
+TF_CPP_MIN_LOG_LEVEL 取值 3 ： 屏蔽通知信息、警告信息和报错信息
+'''
 import os
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -11,31 +18,24 @@ import numpy as np
 import collections
 from typing import Callable, List, OrderedDict
 
-'''
-os.environ[" xxxxxx "]='x'
-TF_CPP_MIN_LOG_LEVEL 取值 0 ： 0也是默认值，输出所有信息
-TF_CPP_MIN_LOG_LEVEL 取值 1 ： 屏蔽通知信息
-TF_CPP_MIN_LOG_LEVEL 取值 2 ： 屏蔽通知信息和警告信息
-TF_CPP_MIN_LOG_LEVEL 取值 3 ： 屏蔽通知信息、警告信息和报错信息
-'''
-
 # 测试是否可以使用tff
 print(tff.federated_computation(lambda: 'Hello, TFF!')())
 
 # 加载数据集,并打印数据集的形状
 emnist_train, emnist_test = tff.simulation.datasets.emnist.load_data()
-print(len(emnist_train.client_ids))
-print(emnist_train.element_type_structure)
+print('总共有多少个客户端：', len(emnist_train.client_ids))
+print('客户端数据类型：', emnist_train.element_type_structure)
 
-# 抽取一个客户端的数据集，查看一下数据集的内容
+# 抽取第一个客户端的数据集，查看一下数据集的内容
 example_dataset = emnist_train.create_tf_dataset_for_client(emnist_train.client_ids[0])
 fig = plt.figure(figsize=(20, 4))
 idx = 0
 for example in example_dataset.take(20):
-  plt.subplot(5, 5, idx + 1)
+  plt.subplot(4, 5, idx + 1)
   plt.imshow(example['pixels'].numpy(), cmap='gray', aspect='equal')
   plt.axis('off')
   idx += 1
+plt.show()
 
 # 抽取几个客户端，并查看每个客户端数据集的基本分布
 f = plt.figure(figsize=(12, 7))
@@ -50,6 +50,7 @@ for i in range(6):
   plt.title('Client {}'.format(i))
   for j in range(10):
     plt.hist(plot_data[j], density=False, bins=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+plt.show()
 
 # 随机抽取几个客户端进行mnist数据集平均图像像素的可视化表达，
 for i in range(5):
@@ -104,6 +105,8 @@ print('Number of client datasets: {l}'.format(l=len(federated_train_data)))
 print('First dataset: {d}'.format(d=federated_train_data[0]))
 
 print('--------------------------------------基于 Keras 的模型------------------------------------------')
+
+
 # 基于 Keras 的模型创建
 def create_keras_model():
   return tf.keras.models.Sequential([
