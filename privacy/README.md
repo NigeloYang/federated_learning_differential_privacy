@@ -9,7 +9,7 @@ Tensorflow Privacy (TF Privacy) 是 Google 研究团队开发的一个开源库�
 ## 文件说明
 - [db_basic.md 记录差分隐私基本原理](dp_basic.md)
 - demo 记录案例
-1. [demo1 链接攻击](./demo/demo1.py)
-2. [demo2 k-匿名](./demo/demo2.py)
-3. [demo3 Laplace 机制](./demo/demo3.py)
-4. [demo4 DP 属性组合](./demo/demo4.py)
+1. [demo1 链接攻击](demo/custom/demo1.py)
+2. [demo2 k-匿名](demo/custom/demo2.py)
+3. [demo3 Laplace 机制](demo/custom/demo3.py)
+4. [demo4 DP 属性组合](demo/custom/demo4.py)
