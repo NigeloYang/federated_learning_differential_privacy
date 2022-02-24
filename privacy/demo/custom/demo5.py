@@ -17,19 +17,19 @@ plt.style.use('seaborn-whitegrid')
 import pandas as pd
 import numpy as np
 
-# delta = 10e-5
-# epsilon = 1
-# sensitivity = 1
-#
-# laplace = [np.random.laplace(loc=0, scale=1/epsilon) for x in range(100000)]
-#
-# sigma = np.sqrt(2 * sensitivity**2 * np.log(1.25 / delta) / epsilon**2 )
-# gauss = [np.random.normal(loc=0, scale=sigma) for x in range(100000)]
-#
-# plt.hist(laplace, bins=50, label='Laplace')
-# plt.hist(gauss, bins=50, alpha=.8, label='Gaussian')
-# plt.legend()
-#
-# plt.show()
+delta = 10e-5
+epsilon = 1
+sensitivity = 1
+
+laplace = [np.random.laplace(loc=0, scale=1/epsilon) for x in range(100000)]
+
+sigma = np.sqrt(2 * sensitivity**2 * np.log(1.25 / delta) / epsilon**2 )
+gauss = [np.random.normal(loc=0, scale=sigma) for x in range(100000)]
+
+plt.hist(laplace, bins=50, label='Laplace')
+plt.hist(gauss, bins=50, alpha=.8, label='Gaussian')
+plt.legend()
+
+plt.show()
 
 print(exp(25)/(exp(25)+exp(15)+exp(10)))

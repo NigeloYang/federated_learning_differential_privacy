@@ -16,7 +16,7 @@ names = ['Age', 'Workclass', 'fnlwgt', 'Education', 'Education_Num', 'Marital_St
          'Race', 'Sex', 'Capital_Gain', 'Capital_Loss', 'Hours_per_week', 'Country', 'income']
 
 # 获取原始数据集
-adult_data = pd.read_csv('../data/adult.csv', names=names)
+adult_data = pd.read_csv('../../data/adult.csv', names=names)
 print('原始数据集', adult_data.shape)
 print(adult_data.head())
 

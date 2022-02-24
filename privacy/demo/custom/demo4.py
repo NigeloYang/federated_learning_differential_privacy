@@ -52,7 +52,7 @@ names = ['Age', 'work_class', 'fnlwgt', 'Education', 'Education_Num', 'Marital_S
          'Race', 'Sex', 'Capital_Gain', 'Capital_Loss', 'Hours_per_week', 'Country', 'income']
 
 # 获取原始数据集
-adult_data = pd.read_csv('../data/adult.csv', names=names)
+adult_data = pd.read_csv('../../data/adult.csv', names=names)
 result = adult_data['Education'].value_counts().to_frame().head(5)
 print('no laplace: ', result)
 
