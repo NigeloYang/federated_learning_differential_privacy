@@ -1,5 +1,3 @@
-# Tensorflow 学习记录
-
 ## tensorflow 篇
 目标：Tensorflow基础知识、Tensorflow.API、Tensorflow 案例 
 
@@ -10,10 +8,10 @@
 
 完成：部分案例，部分 TFF.api 知识
 
-## Privacy 篇
+## Differential Privacy 篇
 主要记录隐私保护相关的内容
 
-目标：暂无内容
+目标：完善差分隐私的基础知识和文献中的模型
 
 ## 常用符号记录
 | 符号 | 英文   | 解释  |
@@ -27,6 +25,8 @@
 ## 介绍
 本页的某些部分内容是基于 Google,Keras 创建和共享的作品的修改，并根据知识共享 4.0 署名许可中所述的术语使用。
 仅供学习使用，如有侵权请联系作者删除,欢迎补充说明 ❤️
+
+本文中的所有 `code` 在不说明的情况下都是基于: `Tensorflow` 编写
 
 📧 yangqiantao@outlook.com
 
