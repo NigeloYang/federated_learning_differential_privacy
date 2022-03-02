@@ -136,8 +136,7 @@ def AddGaussianNoise(t, sigma, name=None):
     the noisy tensor.
   """
 
-  with tf.name_scope(values=[t, sigma], name=name,
-                     default_name="add_gaussian_noise") as name:
+  with tf.name_scope(values=[t, sigma], name=name, default_name="add_gaussian_noise") as name:
     noisy_t = t + tf.random_normal(tf.shape(t), stddev=sigma)
   return noisy_t
 

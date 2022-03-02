@@ -15,9 +15,8 @@
 
 import time
 
-from absl import app
-from absl import flags
-from absl import logging
+from absl import app, flags, logging
+
 import tensorflow as tf
 from tensorflow_privacy.privacy.analysis import compute_dp_sgd_privacy_lib
 from tensorflow_privacy.privacy.optimizers import dp_optimizer
@@ -42,8 +41,7 @@ def cnn_model_fn(features, labels, mode, params):  # pylint: disable=unused-argu
   logits = common.get_cnn_model(features)
   
   # Calculate loss as a vector (to support microbatches in DP-SGD).
-  vector_loss = tf.nn.sparse_softmax_cross_entropy_with_logits(
-    labels=labels, logits=logits)
+  vector_loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=labels, logits=logits)
   # Define mean of loss across minibatch (for reporting through tf.Estimator).
   scalar_loss = tf.reduce_mean(input_tensor=vector_loss)
   
@@ -61,8 +59,7 @@ def cnn_model_fn(features, labels, mode, params):  # pylint: disable=unused-argu
         learning_rate=FLAGS.learning_rate)
       opt_loss = vector_loss
     else:
-      optimizer = tf.compat.v1.train.GradientDescentOptimizer(
-        learning_rate=FLAGS.learning_rate)
+      optimizer = tf.compat.v1.train.GradientDescentOptimizer(learning_rate=FLAGS.learning_rate)
       opt_loss = scalar_loss
     
     global_step = tf.compat.v1.train.get_global_step()
@@ -72,15 +69,12 @@ def cnn_model_fn(features, labels, mode, params):  # pylint: disable=unused-argu
     # the vector_loss because tf.estimator requires a scalar loss. This is only
     # used for evaluation and debugging by tf.estimator. The actual loss being
     # minimized is opt_loss defined above and passed to optimizer.minimize().
-    return tf.estimator.EstimatorSpec(
-      mode=mode, loss=scalar_loss, train_op=train_op)
+    return tf.estimator.EstimatorSpec(mode=mode, loss=scalar_loss, train_op=train_op)
   
   # Add evaluation metrics (for EVAL mode).
   elif mode == tf.estimator.ModeKeys.EVAL:
     eval_metric_ops = {
-      'accuracy':
-        tf.metrics.accuracy(
-          labels=labels, predictions=tf.argmax(input=logits, axis=1))
+      'accuracy': tf.metrics.accuracy(labels=labels, predictions=tf.argmax(input=logits, axis=1))
     }
     return tf.estimator.EstimatorSpec(
       mode=mode, loss=scalar_loss, eval_metric_ops=eval_metric_ops)
@@ -92,8 +86,7 @@ def main(unused_argv):
     raise ValueError('Number of microbatches should divide evenly batch_size')
   
   # Instantiate the tf.Estimator.
-  mnist_classifier = tf.estimator.Estimator(
-    model_fn=cnn_model_fn, model_dir=FLAGS.model_dir)
+  mnist_classifier = tf.estimator.Estimator(model_fn=cnn_model_fn, model_dir=FLAGS.model_dir)
   
   # Training loop.
   steps_per_epoch = 60000 // FLAGS.batch_size
@@ -108,16 +101,18 @@ def main(unused_argv):
     
     # Evaluate the model and print results
     eval_results = mnist_classifier.evaluate(
-      input_fn=common.make_input_fn('test', FLAGS.batch_size, 1))
+      input_fn=common.make_input_fn('test', FLAGS.batch_size, 1)
+    )
     test_accuracy = eval_results['accuracy']
     print('Test accuracy after %d epochs is: %.3f' % (epoch, test_accuracy))
     
     # Compute the Differential_Privacy budget expended.
     if FLAGS.dpsgd:
       if FLAGS.noise_multiplier > 0.0:
-        eps, _ = compute_dp_sgd_privacy_lib.compute_dp_sgd_privacy(
+        eps, order = compute_dp_sgd_privacy_lib.compute_dp_sgd_privacy(
           60000, FLAGS.batch_size, FLAGS.noise_multiplier, epoch, 1e-5)
         print('For delta=1e-5, the current epsilon is: %.2f' % eps)
+        print('For delta=1e-5, the current rdp_orders is: %.2f' % order)
       else:
         print('Trained with DP-SGD but with zero noise.')
     else:

@@ -83,7 +83,6 @@ def rnn_model_fn(features, labels, mode):  # pylint: disable=unused-argument
   # Configure the training op (for TRAIN mode).
   if mode == tf.estimator.ModeKeys.TRAIN:
     if FLAGS.dpsgd:
-      
       optimizer = dp_optimizer.DPAdamGaussianOptimizer(
         l2_norm_clip=FLAGS.l2_norm_clip,
         noise_multiplier=FLAGS.noise_multiplier,
@@ -92,24 +91,20 @@ def rnn_model_fn(features, labels, mode):  # pylint: disable=unused-argument
         unroll_microbatches=True)
       opt_loss = vector_loss
     else:
-      optimizer = tf.compat.v1.train.AdamOptimizer(
-        learning_rate=FLAGS.learning_rate)
+      optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate=FLAGS.learning_rate)
       opt_loss = scalar_loss
     global_step = tf.compat.v1.train.get_global_step()
     train_op = optimizer.minimize(loss=opt_loss, global_step=global_step)
-    return tf.estimator.EstimatorSpec(
-      mode=mode, loss=scalar_loss, train_op=train_op)
+    return tf.estimator.EstimatorSpec(mode=mode, loss=scalar_loss, train_op=train_op)
   
   # Add evaluation metrics (for EVAL mode).
   elif mode == tf.estimator.ModeKeys.EVAL:
     eval_metric_ops = {
-      'accuracy':
-        tf.metrics.accuracy(
-          labels=tf.cast(x[:, 1:], dtype=tf.int32),
-          predictions=tf.argmax(input=logits, axis=2))
+      'accuracy': tf.metrics.accuracy(
+        labels=tf.cast(x[:, 1:], dtype=tf.int32),
+        predictions=tf.argmax(input=logits, axis=2))
     }
-    return tf.estimator.EstimatorSpec(
-      mode=mode, loss=scalar_loss, eval_metric_ops=eval_metric_ops)
+    return tf.estimator.EstimatorSpec(mode=mode, loss=scalar_loss, eval_metric_ops=eval_metric_ops)
 
 
 def load_data():
@@ -121,9 +116,9 @@ def load_data():
       name='lm1b/subwords8k',
       split=tfds.Split.TRAIN,
       batch_size=NB_TRAIN,
-      shuffle_files=True)
-    test_dataset = tfds.load(
-      name='lm1b/subwords8k', split=tfds.Split.TEST, batch_size=10000)
+      shuffle_files=True
+    )
+    test_dataset = tfds.load(name='lm1b/subwords8k', split=tfds.Split.TEST, batch_size=10000)
     train_data = next(iter(tfds.as_numpy(train_dataset)))
     test_data = next(iter(tfds.as_numpy(test_dataset)))
     train_data = train_data['text'].flatten()
@@ -179,12 +174,14 @@ def main(unused_argv):
     x={'x': train_data[:train_data_end]},
     batch_size=batch_len,
     num_epochs=FLAGS.epochs,
-    shuffle=False)
+    shuffle=False
+  )
   eval_input_fn = tf.compat.v1.estimator.inputs.numpy_input_fn(
     x={'x': test_data[:test_data_end]},
     batch_size=batch_len,
     num_epochs=1,
-    shuffle=False)
+    shuffle=False
+  )
   
   # Training loop.
   steps_per_epoch = len(train_data) // batch_len

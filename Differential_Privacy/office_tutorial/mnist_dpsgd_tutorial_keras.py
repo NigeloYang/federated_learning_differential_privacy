@@ -13,13 +13,10 @@
 # limitations under the License.
 """Training a CNN on MNIST with Keras and the DP SGD optimizer."""
 
-from absl import app
-from absl import flags
-from absl import logging
-
 import numpy as np
 import tensorflow as tf
 
+from absl import app, flags, logging
 from tensorflow_privacy.privacy.analysis.rdp_accountant import compute_rdp, get_privacy_spent
 from tensorflow_privacy.privacy.optimizers.dp_optimizer_keras import DPKerasSGDOptimizer
 
@@ -45,7 +42,9 @@ def compute_epsilon(steps):
     q=sampling_probability,
     noise_multiplier=FLAGS.noise_multiplier,
     steps=steps,
-    orders=orders)
+    orders=orders
+  )
+  
   # Delta is set to 1e-5 because MNIST has 60000 training points.
   return get_privacy_spent(orders, rdp, target_delta=1e-5)[0]
 
@@ -102,8 +101,7 @@ def main(unused_argv):
       num_microbatches=FLAGS.microbatches,
       learning_rate=FLAGS.learning_rate)
     # Compute vector of per-example loss rather than its mean over a minibatch.
-    loss = tf.keras.losses.CategoricalCrossentropy(
-      from_logits=True, reduction=tf.losses.Reduction.NONE)
+    loss = tf.keras.losses.CategoricalCrossentropy(from_logits=True, reduction=tf.losses.Reduction.NONE)
   else:
     optimizer = tf.keras.optimizers.SGD(learning_rate=FLAGS.learning_rate)
     loss = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
@@ -117,9 +115,10 @@ def main(unused_argv):
     train_labels,
     epochs=FLAGS.epochs,
     validation_data=(test_data, test_labels),
-    batch_size=FLAGS.batch_size)
+    batch_size=FLAGS.batch_size
+  )
   
-  # Compute the Differential_Privacy budget expended.
+  # Compute the Differential_Privacy budget expjended.
   if FLAGS.dpsgd:
     eps = compute_epsilon(FLAGS.epochs * 60000 // FLAGS.batch_size)
     print('For delta=1e-5, the current epsilon is: %.2f' % eps)

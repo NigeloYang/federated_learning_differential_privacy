@@ -20,11 +20,9 @@ import tensorflow_datasets as tfds
 def get_cnn_model(features):
   """Given input features, returns the logits from a simple CNN model."""
   input_layer = tf.reshape(features, [-1, 28, 28, 1])
-  y = tf.keras.layers.Conv2D(
-      16, 8, strides=2, padding='same', activation='relu').apply(input_layer)
+  y = tf.keras.layers.Conv2D(16, 8, strides=2, padding='same', activation='relu').apply(input_layer)
   y = tf.keras.layers.MaxPool2D(2, 1).apply(y)
-  y = tf.keras.layers.Conv2D(
-      32, 4, strides=2, padding='valid', activation='relu').apply(y)
+  y = tf.keras.layers.Conv2D(32, 4, strides=2, padding='valid', activation='relu').apply(y)
   y = tf.keras.layers.MaxPool2D(2, 1).apply(y)
   y = tf.keras.layers.Flatten().apply(y)
   y = tf.keras.layers.Dense(32, activation='relu').apply(y)

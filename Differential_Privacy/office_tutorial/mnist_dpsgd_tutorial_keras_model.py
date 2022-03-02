@@ -19,8 +19,7 @@ from absl import logging
 import numpy as np
 import tensorflow as tf
 
-from tensorflow_privacy.privacy.analysis.rdp_accountant import compute_rdp
-from tensorflow_privacy.privacy.analysis.rdp_accountant import get_privacy_spent
+from tensorflow_privacy.privacy.analysis.rdp_accountant import compute_rdp, get_privacy_spent
 from tensorflow_privacy.privacy.keras_models.dp_keras_model import DPSequential
 
 flags.DEFINE_boolean(
