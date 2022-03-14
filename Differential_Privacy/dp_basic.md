@@ -126,30 +126,3 @@ u 的敏感度：`∆u = max(D,D':(||D-D'||1)<=1) |u(D,R) - u(D',R)|`
 | math | u(x, r1) = 50 | 0.333  |   0.628   | 
 | AI   | u(x, r2) = 20 | 0.333  |   0.124   | 
 | DP   | u(x, r3) = 30 | 0.333  |   0.231   | 
-
-
-### 常用希腊字母
-Α α：阿尔法 Alpha  
-Β β：贝塔 Beta  
-Γ γ：伽玛 Gamma  
-Δ δ：德尔塔 Delte  
-Ε ε：艾普西龙 Epsilon  
-Ζ ζ：捷塔 Zeta  
-Ε η：依塔 Eta  
-Θ θ：西塔 Theta  
-Ι ι：艾欧塔 Iota  
-Κ κ：喀帕 Kappa  
-∧ λ：拉姆达 Lambda  
-Μ μ：缪 Mu  
-Ν ν：拗 Nu  
-Ξ ξ：克西 Xi  
-Ο ο：欧麦克轮 Omicron  
-∏ π：派 Pi  
-Ρ ρ：柔 Rho  
-∑ σ：西格玛 Sigma  
-Τ τ：套 Tau  
-Υ υ：宇普西龙 Upsilon  
-Φ φ：fai Phi  
-Χ χ：器 Chi  
-Ψ ψ：普赛 Psi  
-Ω ω：欧米伽 Omega
