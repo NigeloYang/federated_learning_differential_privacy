@@ -22,9 +22,8 @@ class GetDataSet(object):
         else:
             pass
 
-
     def mnistDataSetConstruct(self, isIID):
-        data_dir = r'.\data\MNIST'
+        data_dir = r'../data/MNIST'
         # data_dir = r'./data/MNIST'
         train_images_path = os.path.join(data_dir, 'train-images-idx3-ubyte.gz')
         train_labels_path = os.path.join(data_dir, 'train-labels-idx1-ubyte.gz')
@@ -62,8 +61,6 @@ class GetDataSet(object):
             self.train_data = train_images[order]
             self.train_label = train_labels[order]
 
-
-
         self.test_data = test_images
         self.test_label = test_labels
 
@@ -79,9 +76,7 @@ def extract_images(filename):
     with gzip.open(filename) as bytestream:
         magic = _read32(bytestream)
         if magic != 2051:
-            raise ValueError(
-                    'Invalid magic number %d in MNIST image file: %s' %
-                    (magic, filename))
+            raise ValueError('Invalid magic number %d in MNIST image file: %s' %(magic, filename))
         num_images = _read32(bytestream)
         rows = _read32(bytestream)
         cols = _read32(bytestream)
@@ -107,17 +102,17 @@ def extract_labels(filename):
         magic = _read32(bytestream)
         if magic != 2049:
             raise ValueError(
-                    'Invalid magic number %d in MNIST label file: %s' %
-                    (magic, filename))
+                'Invalid magic number %d in MNIST label file: %s' %
+                (magic, filename))
         num_items = _read32(bytestream)
         buf = bytestream.read(num_items)
         labels = np.frombuffer(buf, dtype=np.uint8)
         return dense_to_one_hot(labels)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     'test data set'
-    mnistDataSet = GetDataSet('mnist', True) # test NON-IID
+    mnistDataSet = GetDataSet('mnist', True)  # test NON-IID
     if type(mnistDataSet.train_data) is np.ndarray and type(mnistDataSet.test_data) is np.ndarray and \
             type(mnistDataSet.train_label) is np.ndarray and type(mnistDataSet.test_label) is np.ndarray:
         print('the type of data is numpy ndarray')
@@ -126,4 +121,3 @@ if __name__=="__main__":
     print('the shape of the train data set is {}'.format(mnistDataSet.train_data.shape))
     print('the shape of the test data set is {}'.format(mnistDataSet.test_data.shape))
     print(mnistDataSet.train_label[0:100], mnistDataSet.train_label[11000:11100])
-
