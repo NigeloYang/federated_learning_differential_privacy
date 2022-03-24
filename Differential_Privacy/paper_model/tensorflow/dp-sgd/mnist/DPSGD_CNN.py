@@ -1,21 +1,10 @@
 # -*- coding: utf-8 -*-
 import tensorflow as tf
-from tensorflow.python.framework import ops
-from tensorflow.examples.tutorials.mnist import input_data
 import argparse
-import numpy as np
-import math
-import random
-import scipy.integrate as integrate
-import scipy.stats
-import mpmath as mp
 from gaussian_moments import *
-from tensorflow.python.platform import flags
-import datetime
 import time
-from tensorflow.python.training import optimizer
 from tensorflow.python.training.gradient_descent import GradientDescentOptimizer
-import accountant, utils
+import accountant
 
 # mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
 

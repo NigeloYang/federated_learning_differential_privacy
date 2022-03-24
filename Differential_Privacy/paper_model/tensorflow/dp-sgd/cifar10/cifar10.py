@@ -38,23 +38,8 @@ from __future__ import print_function
 import argparse
 import os
 import re
-import sys
 import tarfile
 
-from tensorflow.python.framework import constant_op
-from tensorflow.python.framework import dtypes
-from tensorflow.python.framework import ops
-from tensorflow.python.ops import array_ops
-from tensorflow.python.ops import candidate_sampling_ops
-from tensorflow.python.ops import embedding_ops
-from tensorflow.python.ops import gen_nn_ops
-from tensorflow.python.ops import math_ops
-from tensorflow.python.ops import nn_ops
-from tensorflow.python.ops import sparse_ops
-from tensorflow.python.ops import variables
-import math
-
-from six.moves import urllib
 import tensorflow as tf
 
 import cifar10_input

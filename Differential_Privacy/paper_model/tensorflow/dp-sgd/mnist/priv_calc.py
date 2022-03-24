@@ -1,5 +1,5 @@
 import tensorflow as tf
-import accountant, utils
+import accountant
 import argparse
 import time
 import sys

@@ -27,7 +27,6 @@ from __future__ import division
 import abc
 import collections
 import math
-import sys
 
 import numpy
 import tensorflow as tf

@@ -10,14 +10,11 @@ from __future__ import print_function
 from datetime import datetime
 import os.path
 import time
-from math import sqrt
-import math
 
-import numpy as np
 from six.moves import xrange  # pylint: disable=redefined-builtin
 import tensorflow as tf
 from gaussian_moments import *
-import accountant, utils
+import accountant
 
 import cifar10
 
@@ -87,7 +84,7 @@ def _variable_with_weight_decay(name, shape, stddev, wd):
         """
     #dtype = tf.float16 if FLAGS.use_fp16 else tf.float32
     var = cifar10._variable_on_cpu(name, shape,
-                            initializer=tf.contrib.layers.xavier_initializer_conv2d())
+                                   initializer=tf.contrib.layers.xavier_initializer_conv2d())
     if wd is not None:
         weight_decay = tf.multiply(tf.nn.l2_loss(var), wd, name='weight_loss')
         tf.add_to_collection('losses', weight_decay)
@@ -187,8 +184,8 @@ def inference(images):
     
   # local4
   with tf.variable_scope('local4') as scope:
-    weights1 = cifar10._variable_with_weight_decay('weights', shape=[5*5*256, hk],
-                                          stddev=0.04, wd=None)
+    weights1 = cifar10._variable_with_weight_decay('weights', shape=[5 * 5 * 256, hk],
+                                                   stddev=0.04, wd=None)
     biases4 = cifar10._variable_on_cpu('biases', [hk], tf.constant_initializer(0.1))
     h_pool2_flat = tf.reshape(pool3, [-1, 5*5*256]);
     z2 = tf.add(tf.matmul(h_pool2_flat, weights1), biases4, name=scope.name)
@@ -212,9 +209,9 @@ def inference(images):
   # tf.nn.sparse_softmax_cross_entropy_with_logits accepts the unscaled logits 
   # and performs the softmax internally for efficiency.
   weights2 = cifar10._variable_with_weight_decay('weights', [hk, 10],
-                                          stddev=1/(hk*1.0), wd=0.0)
+                                                 stddev=1/(hk*1.0), wd=0.0)
   biases5 = cifar10._variable_on_cpu('biases', [10],
-                              tf.constant_initializer(0.0))
+                                     tf.constant_initializer(0.0))
   softmax_linear = tf.add(tf.matmul(local4, weights2), biases5, name=scope.name)
   cifar10._activation_summary(softmax_linear)
   return softmax_linear
@@ -284,8 +281,8 @@ def train():
                                                                                                                           
     # local4
     with tf.variable_scope('local4') as scope:
-        weights1 = cifar10._variable_with_weight_decay('weights', shape=[5*5*256, hk],
-                                    stddev=0.04, wd=None)
+        weights1 = cifar10._variable_with_weight_decay('weights', shape=[5 * 5 * 256, hk],
+                                                       stddev=0.04, wd=None)
         biases4 = cifar10._variable_on_cpu('biases', [hk], tf.constant_initializer(0.1))
         h_pool2_flat = tf.reshape(pool3, [-1, 5*5*256]);
         z2 = tf.add(tf.matmul(h_pool2_flat, weights1), biases4, name=scope.name)
@@ -302,7 +299,7 @@ def train():
     # tf.nn.sparse_softmax_cross_entropy_with_logits accepts the unscaled logits
     # and performs the softmax internally for efficiency.
     weights2 = cifar10._variable_with_weight_decay('weights', [hk, 10],
-                                            stddev=1/(hk*1.0), wd=0.0)
+                                                   stddev=1/(hk*1.0), wd=0.0)
     biases5 = cifar10._variable_on_cpu('biases', [10], tf.constant_initializer(0.0))
     logits = tf.add(tf.matmul(local4, weights2), biases5, name=scope.name)
     cifar10._activation_summary(logits)
