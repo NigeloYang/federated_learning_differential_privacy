@@ -1,4 +1,4 @@
-# Federated-Learning (PyTorch)
+# FedAvg (PyTorch)
 
 Implementation of the vanilla federated learning paper : [Communication-Efficient Learning of Deep Networks from Decentralized Data](https://arxiv.org/abs/1602.05629).
 
@@ -109,3 +109,6 @@ Federated parameters (default values):
 * [Leaf: A Benchmark for Federated Settings (CMU)](https://leaf.cmu.edu/)
 * [TensorFlow Federated](https://www.tensorflow.org/federated)
 * [Google AI Blog Post](https://ai.googleblog.com/2017/04/federated-learning-collaborative.html)
+
+## Thanks
+[This library comes from AshwinRJ](https://github.com/AshwinRJ/Federated-Learning-PyTorch)

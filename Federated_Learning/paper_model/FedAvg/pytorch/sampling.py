@@ -172,21 +172,25 @@ def cifar_noniid(dataset, num_users):
 
 # 用于下载数据集
 if __name__ == '__main__':
-  # dataset_train = datasets.CIFAR10(
-  #   '../data/pytorch/', train=True, download=True,
-  #   transform=transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-  # )
-
+  dataset_train = datasets.CIFAR10(
+    '../data/pytorch/', train=True, download=True,
+    transform=transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+  )
+  print(f'数据集已经准备好，进入数据格式化')
+  num = 100
+  d = cifar_iid(dataset_train, num)
+  print(f'cifar_iid: \n {d[0]}  \n length: {len(d[0])}')
+  
   # dataset_train = datasets.FashionMNIST(
   #   '../data/pytorch/', train=True, download=True,
   #   transform=transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
   # )
+  # print(f'数据集已经准备好，进入数据格式化')
   
-  dataset_train = datasets.MNIST(
-    root='../data/pytorch/', train=True, download=True,
-    transform=transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
-  )
-  
-  print(f'数据集已经准备好，进入数据格式化')
+  # dataset_train = datasets.MNIST(
+  #   root='../data/pytorch/', train=True, download=True,
+  #   transform=transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
+  # )
+  # print(f'数据集已经准备好，进入数据格式化')
   # num = 100
   # d = mnist_noniid(dataset_train, num)

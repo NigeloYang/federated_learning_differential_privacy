@@ -31,28 +31,22 @@ This example is decribed in more details in this post: https://goo.gl/UKr7vH
 """
 
 import os
-
-from absl import app
-from absl import flags
-from absl import logging
+from absl import app, flags, logging
 import numpy as np
+
 import tensorflow as tf
 import tensorflow_datasets as tfds
+
 from tensorflow_privacy.privacy.analysis.rdp_accountant import compute_rdp, get_privacy_spent
 from tensorflow_privacy.privacy.optimizers import dp_optimizer
 
-flags.DEFINE_boolean(
-  'dpsgd', True, 'If True, train with DP-SGD. If False, '
-                 'train with vanilla SGD.')
+flags.DEFINE_boolean('dpsgd', True, 'If True, train with DP-SGD. If False, train with vanilla SGD.')
 flags.DEFINE_float('learning_rate', 0.001, 'Learning rate for training')
-flags.DEFINE_float('noise_multiplier', 0.001,
-                   'Ratio of the standard deviation to the clipping norm')
+flags.DEFINE_float('noise_multiplier', 0.001, 'Ratio of the standard deviation to the clipping norm')
 flags.DEFINE_float('l2_norm_clip', 1.0, 'Clipping norm')
 flags.DEFINE_integer('batch_size', 256, 'Batch size')
 flags.DEFINE_integer('epochs', 60, 'Number of epochs')
-flags.DEFINE_integer(
-  'microbatches', 256, 'Number of microbatches '
-                       '(must evenly divide batch_size)')
+flags.DEFINE_integer( 'microbatches', 256, 'Number of microbatches (must evenly divide batch_size)')
 flags.DEFINE_string('model_dir', None, 'Model directory')
 flags.DEFINE_string('data_dir', None, 'Directory containing the PTB data.')
 

@@ -46,8 +46,8 @@ def make_input_fn(split, input_batch_size=256, repetitions=-1, tpu=False):
       return image, label
 
     dataset = tfds.load(name='mnist', split=split)
-    dataset = dataset.map(parser).shuffle(60000).repeat(repetitions).batch(
-        batch_size)
+    dataset = dataset.map(parser).shuffle(60000).repeat(repetitions).batch(batch_size)
+    
     # If this input function is not meant for TPUs, we can stop here.
     # Otherwise, we need to explicitly set its shape. Note that for unknown
     # reasons, returning the latter format causes performance regression

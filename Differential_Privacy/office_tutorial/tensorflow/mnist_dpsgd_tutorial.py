@@ -14,12 +14,12 @@
 """Train a CNN on MNIST with differentially private SGD optimizer."""
 
 import time
-
 from absl import app, flags, logging
 
 import tensorflow as tf
 from tensorflow_privacy.privacy.analysis import compute_dp_sgd_privacy_lib
 from tensorflow_privacy.privacy.optimizers import dp_optimizer
+
 import mnist_dpsgd_tutorial_common as common
 
 flags.DEFINE_boolean('dpsgd', True, 'If True, train with DP-SGD. If False, train with vanilla SGD.')
@@ -74,10 +74,9 @@ def cnn_model_fn(features, labels, mode, params):  # pylint: disable=unused-argu
   # Add evaluation metrics (for EVAL mode).
   elif mode == tf.estimator.ModeKeys.EVAL:
     eval_metric_ops = {
-      'accuracy': tf.metrics.accuracy(labels=labels, predictions=tf.argmax(input=logits, axis=1))
+      'accuracy': tf.metrics.accuracy.update_state(labels=labels, predictions=tf.argmax(input=logits, axis=1))
     }
-    return tf.estimator.EstimatorSpec(
-      mode=mode, loss=scalar_loss, eval_metric_ops=eval_metric_ops)
+    return tf.estimator.EstimatorSpec(mode=mode, loss=scalar_loss, eval_metric_ops=eval_metric_ops)
 
 
 def main(unused_argv):

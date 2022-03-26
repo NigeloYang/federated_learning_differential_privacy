@@ -14,9 +14,10 @@
 """Training a CNN on MNIST with Keras and the DP SGD optimizer."""
 
 import numpy as np
+from absl import app, flags, logging
+
 import tensorflow as tf
 
-from absl import app, flags, logging
 from tensorflow_privacy.privacy.analysis.rdp_accountant import compute_rdp, get_privacy_spent
 from tensorflow_privacy.privacy.optimizers.dp_optimizer_keras import DPKerasSGDOptimizer
 
