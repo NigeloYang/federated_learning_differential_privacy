@@ -11,3 +11,8 @@ replace:True表示可以取相同数字，False表示不可以取相同数字
 ```
 np.dot(x,y) == x.dot(y): x是m × n 矩阵 ，y是n×m矩阵，则x.dot(y) 得到m×m矩阵。
 ```
+
+### numpy.isscalar(num)
+```
+这是一个逻辑函数，判断输入 num 的类型是否为标量，num是标量，则返回true
+```

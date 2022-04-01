@@ -11,3 +11,5 @@
 /Federated_Learning/paper_model/FedAvg/data
 /Federated_Learning/paper_model/FedAvg/pytorch/logs
 /Federated_Learning/paper_model/FedAvg/pytorch/save
+
+/Federated_Learning/paper_model/FDP/config

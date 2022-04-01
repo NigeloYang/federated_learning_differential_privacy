@@ -1,0 +1,24 @@
+dataset: mnist-non-iid
+net: MnistCNN
+seed: 1230
+sampling: 0.25
+max_grad_norm: 1.0
+noise_sigma: 1.8
+save_model: True
+federated:
+  num_clients: 100
+  sync_gap: 1
+train:
+  loss: NLL
+  epoch: 600
+  batch_size: 16
+  optimizer: adam
+  optimizer_kwargs:
+      lr: 0.001
+  dataloader:
+    num_workers: 2
+scheduler:
+  type: step
+  scheduler_kwargs:
+      step_size: 600
+      gamma: 0.9

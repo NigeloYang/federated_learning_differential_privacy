@@ -1,0 +1,25 @@
+dataset: cifar-non-iid
+net: CifarCNN
+seed: 1230
+sampling: 1.0
+max_grad_norm: 1.0
+noise_sigma: 2.0
+save_model: True
+federated:
+  num_clients: 100
+  sync_gap: 1
+train:
+  loss: CrossEntropy
+  epoch: 1000
+  batch_size: 16
+  optimizer: adam
+  optimizer_kwargs:
+      lr: 0.005
+      weight_decay: 0.0005
+  dataloader:
+    num_workers: 2
+scheduler:
+  type: step
+  scheduler_kwargs:
+      step_size: 10
+      gamma: 0.99
