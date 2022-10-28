@@ -24,7 +24,7 @@ from transformers.data.processors.glue import glue_convert_examples_to_features
 
 # 加载数据集
 STANFORD_SNLI_URL = "https://nlp.stanford.edu/projects/snli/snli_1.0.zip"
-DATA_DIR = "../data/"
+DATA_DIR = "../../data/"
 
 
 # 第一次运行下载的数据集容易出现提取报错，然后就直接手动解压,加入if条件就可以直接在第二次运行的时候不报错

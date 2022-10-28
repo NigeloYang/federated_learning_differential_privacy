@@ -43,7 +43,7 @@ transform = transforms.Compose([
 ])
 
 # 加载数据集以及修改数据集形状
-data_dir = "../data"
+data_dir = "../../data"
 
 train_data = CIFAR10(
   root=data_dir, train=True, download=True, transform=transform
