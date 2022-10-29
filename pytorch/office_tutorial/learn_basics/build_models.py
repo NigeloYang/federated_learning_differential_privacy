@@ -49,4 +49,4 @@ y_pred = pred_probab.argmax(1)
 print(f"Predicted class: {y_pred} \n")
 
 for name, param in model.named_parameters():
-    print(f"the i++ \n Layer: {name} \n Size: {param.size()} \n Values : {param[:2]}  \n")
+    print(f"Layer name: {name} \n Size: {param.size()} \n Values : {param[:2]}  \n")

@@ -1,15 +1,14 @@
 .idea/
 
-# 忽略 pytorch 文件
-/pytorch/office_tutorial/data
-/pytorch/office_tutorial/model
-
 # 忽略 DP 中的数据
 /Differential_Privacy/office_tutorial/pytorch/data
 
-# 忽略复现文献模型中的 结果 和 数据
+# FL 模型
 /Federated_Learning/paper_model/FedAvg/data
 /Federated_Learning/paper_model/FedAvg/pytorch/logs
 /Federated_Learning/paper_model/FedAvg/pytorch/save
-
 /Federated_Learning/paper_model/FDP/config
+
+# 忽略 pytorch 文件
+/pytorch/office_tutorial/data
+/pytorch/office_tutorial/model

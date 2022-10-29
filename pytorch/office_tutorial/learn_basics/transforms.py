@@ -19,7 +19,19 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor, Lambda
 
 ds = datasets.FashionMNIST(
-  root="data",
+  root="../data/",
+  train=True,
+  download=True,
+  transform=ToTensor(),
+)
+
+print(len(ds))
+print(ds[0][0])
+print(ds[0][0].shape)
+print(ds[0][1])
+
+ds = datasets.FashionMNIST(
+  root="../data/",
   train=True,
   download=True,
   transform=ToTensor(),

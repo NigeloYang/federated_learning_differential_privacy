@@ -15,43 +15,37 @@ from torchvision.transforms import ToTensor
 import matplotlib.pyplot as plt
 
 training_data = datasets.FashionMNIST(
-  root="data",
-  train=True,
-  download=True,
-  transform=ToTensor()
+    root="../data/", train=True, download=True, transform=ToTensor()
 )
 
 test_data = datasets.FashionMNIST(
-  root="data",
-  train=False,
-  download=True,
-  transform=ToTensor()
+    root="../data/", train=False, download=True, transform=ToTensor()
 )
 
 '''Iterating and Visualizing the Dataset'''
 labels_map = {
-  0: "T-Shirt",
-  1: "Trouser",
-  2: "Pullover",
-  3: "Dress",
-  4: "Coat",
-  5: "Sandal",
-  6: "Shirt",
-  7: "Sneaker",
-  8: "Bag",
-  9: "Ankle Boot",
+    0: "T-Shirt",
+    1: "Trouser",
+    2: "Pullover",
+    3: "Dress",
+    4: "Coat",
+    5: "Sandal",
+    6: "Shirt",
+    7: "Sneaker",
+    8: "Bag",
+    9: "Ankle Boot",
 }
 figure = plt.figure(figsize=(8, 8))
 cols, rows = 2, 5
 for i in range(1, cols * rows + 1):
-  # 统计每个类有多少数量
-  sample_idx = torch.randint(len(training_data), size=(1,)).item()
-  print(f'shape:{sample_idx}')
-  img, label = training_data[sample_idx]
-  figure.add_subplot(rows, cols, i)
-  plt.title(labels_map[label])
-  plt.axis("off")
-  plt.imshow(img.squeeze(), cmap="gray")
+    # 统计每个类有多少数量
+    sample_idx = torch.randint(len(training_data), size=(1,)).item()
+    print(f'shape:{sample_idx}')
+    img, label = training_data[sample_idx]
+    figure.add_subplot(rows, cols, i)
+    plt.title(labels_map[label])
+    plt.axis("off")
+    plt.imshow(img.squeeze(), cmap="gray")
 plt.show()
 
 '''Creating a Custom Dataset for your files'''
@@ -62,34 +56,35 @@ from torchvision.io import read_image
 
 
 class CustomImageDataset(Dataset):
-  # The __init__ function is run once when instantiating the Dataset object.
-  # We initialize the directory containing the images, the annotations file, and both transforms
-  def __init__(self, annotations_file, img_dir, transform=None, target_transform=None):
-    self.img_labels = pd.read_csv(annotations_file)
-    self.img_dir = img_dir
-    self.transform = transform
-    self.target_transform = target_transform
-  
-  # returns the number of samples in our dataset.
-  def __len__(self):
-    return len(self.img_labels)
-  
-  # loads and returns a sample from the dataset at the given index idx
-  def __getitem__(self, idx):
-    img_path = os.path.join(self.img_dir, self.img_labels.iloc[idx, 0])
-    image = read_image(img_path)
-    label = self.img_labels.iloc[idx, 1]
-    if self.transform:
-      image = self.transform(image)
-    if self.target_transform:
-      label = self.target_transform(label)
-    return image, label
+    # The __init__ function is run once when instantiating the Dataset object.
+    # We initialize the directory containing the images, the annotations file, and both transforms
+    def __init__(self, annotations_file, img_dir, transform=None, target_transform=None):
+        self.img_labels = pd.read_csv(annotations_file)
+        self.img_dir = img_dir
+        self.transform = transform
+        self.target_transform = target_transform
+
+    # returns the number of samples in our dataset.
+    def __len__(self):
+        return len(self.img_labels)
+
+    # loads and returns a sample from the dataset at the given index idx
+    def __getitem__(self, idx):
+        img_path = os.path.join(self.img_dir, self.img_labels.iloc[idx, 0])
+        image = read_image(img_path)
+        label = self.img_labels.iloc[idx, 1]
+        if self.transform:
+            image = self.transform(image)
+        if self.target_transform:
+            label = self.target_transform(label)
+        return image, label
 
 
 '''Preparing your data for training with DataLoaders'''
 # The Dataset retrieves our dataset’s features and labels one sample at a time.
 # While training a model, we typically want to pass samples in “minibatches”,
-# reshuffle the data at every epoch to reduce model overfitting, and use Python’s multiprocessing to speed up data retrieval.
+# reshuffle the data at every epoch to reduce model overfitting,
+# and use Python’s multiprocessing to speed up data retrieval.
 
 # DataLoader is an iterable that abstracts this complexity for us
 from torch.utils.data import DataLoader

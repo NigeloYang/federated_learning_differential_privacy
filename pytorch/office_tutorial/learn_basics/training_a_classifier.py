@@ -118,7 +118,7 @@ for epoch in range(5):  # loop over the dataset multiple times
 
 print('Finished Training')
 
-path = './model/cifar_model.pth'
+path = '../model/cifar_model.pth'
 torch.save(net.state_dict(), path)
 print("Saved PyTorch Model State")
 

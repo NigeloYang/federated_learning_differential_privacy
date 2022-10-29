@@ -11,6 +11,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as f
 
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print(f"Using {device} device")
 
 class myModel(nn.Module):
     def __init__(self):
@@ -37,15 +39,14 @@ class myModel(nn.Module):
         return x
 
 model = myModel()
-print('model construct \n', model)
-params = list(model.parameters())
-print('model params len \n', len(params))
-# print('model params \n', params)
-# print('model params shape\n', params.size())
-print('model params conv1.shape \n', params[0].size())
-print('model params conv1.weight \n', params[0])
+print('model construct: \n', model)
+print('model params len: ', model.state_dict().keys)
+# print('model params: \n', params)
+# print('model params shape\n', params)
+# print('model params conv1.shape \n', params[0].size())
+# print('model params conv1.weight \n', params[0])
 
-input = torch.randn(1, 1, 32, 32)
+input = torch.randn(1, 1, 32, 32, device=device)
 out = model(input)
 print(out)
 model.zero_grad()
