@@ -3,6 +3,9 @@
 # 忽略 DP 中的数据
 /Differential_Privacy/office_tutorial/pytorch/data
 
+/ ignore Math
+/math/.ipynb_checkpoints
+
 # FL 模型
 /Federated_Learning/paper_model/FedAvg/data
 /Federated_Learning/paper_model/FedAvg/pytorch/logs
