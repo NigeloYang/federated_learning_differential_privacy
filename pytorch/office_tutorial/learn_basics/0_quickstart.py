@@ -71,7 +71,6 @@ for item in model.state_dict():
     print(f'name: {item} -- params size: {model.state_dict()[item].size()} \n')
     # print(f'name: {item}')
 
-
 # 定义一个优化器和损失函数.
 loss_fn = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
@@ -82,12 +81,14 @@ def train(dataloader, model, loss_fn, optimizer):
     size = len(dataloader.dataset)
     print(size)
     model.train()
+    acc = 0
     for batch, (X, y) in enumerate(dataloader):
         X, y = X.to(device), y.to(device)
 
         # Compute prediction error
         pred = model(X)
         loss = loss_fn(pred, y)
+        acc += (pred.argmax(1) == y).type(torch.float).sum().item()
 
         # Backpropagation
         optimizer.zero_grad()
@@ -96,7 +97,7 @@ def train(dataloader, model, loss_fn, optimizer):
 
         if batch % 100 == 0:
             loss, current = loss.item(), batch * len(X)
-            print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+            print(f"loss: {loss:>7f} --- Acc: [{int(acc):>5d}/{size:5d}] --- [{current:>5d}/{size:>5d}]")
 
 
 # test
@@ -116,7 +117,7 @@ def test(dataloader, model, loss_fn):
     print(f"Test Error: \n Accuracy: {(100 * correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
 
 
-epochs = 5
+epochs = 3
 for t in range(epochs):
     print(f"Epoch {t + 1}\n-------------------------------")
     train(train_dataloader, model, loss_fn, optimizer)
@@ -126,3 +127,33 @@ print("Done!")
 print('after update model parameter:')
 for name, param in model.named_parameters():
     print(f"Layer: {name} | Size: {param.size()} | Values : {param[:2]} \n")
+
+# 保存模型数据
+torch.save(model.state_dict(), '../model/mnist.pth')
+print('saving pytorch model state to mnist.pth')
+
+# loading models
+model = NeuralNetwork()
+torch.load('../model/mnist.pth')
+print('finishing loading model')
+
+classes = [
+    "T-shirt/top",
+    "Trouser",
+    "Pullover",
+    "Dress",
+    "Coat",
+    "Sandal",
+    "Shirt",
+    "Sneaker",
+    "Bag",
+    "Ankle boot",
+]
+
+model.eval()
+x, y = test_data[0][0], test_data[0][1]
+with torch.no_grad():
+    pred = model(x)
+    predicted, actual = classes[pred[0].argmax(0)], classes[y]
+    print(f'Predicted: "{predicted}", Actual: "{actual}"')
+
