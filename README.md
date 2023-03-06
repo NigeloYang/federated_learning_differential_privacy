@@ -12,6 +12,10 @@ Tensorflow: https://tensorflow.google.cn
 
 pytorch:
 
+## algorithm 篇
+主要：主要记录基础算法题，包括数组，栈，队列，动态规划，树等相关基础算法内容
+技术：python
+
 ## Differential Privacy 篇
 主要：主要记录 差分隐私 基础知识以及在联邦学习中的应用
 技术：tensorflow pytorch
