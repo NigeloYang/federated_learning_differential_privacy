@@ -35,9 +35,7 @@ class SampleNet(nn.Module):
 
 
 dataset = TensorDataset(torch.rand(100, 16), torch.randint(0, 2, (100,)))
-
 privacy_engine = PrivacyEngine()
-
 model = SampleNet()
 optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
 data_loader = DataLoader(dataset, batch_size=10)
@@ -47,46 +45,55 @@ print(
     f"Model:{type(model)}, Optimizer:{type(optimizer)}, DataLoader:{type(data_loader)} \n"
 )
 
-'''完整使用：opacus'''
-# model, optimizer, data_loader = privacy_engine.make_private(
-#     module=model,
-#     optimizer=optimizer,
-#     data_loader=data_loader,
-#     max_grad_norm=1.0,
-#     noise_multiplier=1.0
-# )
-# print('=' * 20)
-# print(
-#     f"Before make_private(). "
-#     f"Model:{type(model)}, Optimizer:{type(optimizer)}, DataLoader:{type(data_loader)}"
-# )
+'''集成使用opacus，完成差分隐私内容'''
+model, optimizer, data_loader = privacy_engine.make_private(
+    module=model,
+    optimizer=optimizer,
+    data_loader=data_loader,
+    max_grad_norm=1.0,
+    noise_multiplier=1.0
+)
+print('=' * 20)
+print(
+    f"Before make_private(). "
+    f"Model:{type(model)}, Optimizer:{type(optimizer)}, DataLoader:{type(data_loader)}"
+)
 
-'''部分使用: opacus'''
-'Model ===> GradSampleModule'
-# from opacus import GradSampleModule
-#
-# model = GradSampleModule(model)
-# y = model(torch.rand(10, 16))
-# y.sum().backward()
-#
-# print('\n grad 和 grad_sample 在形状上的差距')
-# grad = model.fc1.weight.grad
-# grad_sample = model.fc1.weight.grad_sample
-# print(f'grad size: {grad.shape}')
-# print(f'grad_sample size: {grad_sample.shape}')
-#
-# print('\n original grad 和 ave grad_sample 区别')
-# grad_sample_agg = grad_sample.mean(dim=0)
-# print("Average grad_sample over 1st dimension. Equal to original: ", torch.allclose(grad, grad_sample_agg))
+# GradSampleModule acts like an underlying nn.Module, and additionally computes per sample gradient tensor (p.grad_sample) for its parameters
+# DPOptimizer takes parameters with p.grad_sample computed and performs clipping and noise addition
+# DPDataLoader takes a vanilla DataLoader and switches the sampling mechanism to Poisson sampling
 
-'DataLoader ===> DPDataLoader'
-# from opacus.data_loader import DPDataLoader
-#
-# dp_data_loader = DPDataLoader.from_data_loader(data_loader, distributed=False)
-#
-# print("Is dataset the same: ", dp_data_loader.dataset == data_loader.dataset)
-# print(f"DPDataLoader length: {len(dp_data_loader)}, original: {len(data_loader)}")
-# print("DPDataLoader sampler: ", dp_data_loader.batch_sampler)
+'''自定义使用opacus，完成全部差分隐私内容'''
+# 1.先初始模型
+model = SampleNet()
+optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
+data_loader = DataLoader(dataset, batch_size=10)
+
+# 2.Model ===> GradSampleModule
+from opacus import GradSampleModule
+
+model = GradSampleModule(model)
+y = model(torch.rand(10, 16))
+y.sum().backward()
+
+print('\n grad 和 grad_sample 在形状上的差距')
+grad = model.fc1.weight.grad
+grad_sample = model.fc1.weight.grad_sample
+print(f'grad size: {grad.shape}')
+print(f'grad_sample size: {grad_sample.shape}')
+
+print('\n original grad 和 ave grad_sample 区别')
+grad_sample_agg = grad_sample.mean(dim=0)
+print("Average grad_sample over 1st dimension. Equal to original: ", torch.allclose(grad, grad_sample_agg))
+
+# 3.DataLoader ===> DPDataLoader
+from opacus.data_loader import DPDataLoader
+
+dp_data_loader = DPDataLoader.from_data_loader(data_loader, distributed=False)
+
+print("Is dataset the same: ", dp_data_loader.dataset == data_loader.dataset)
+print(f"DPDataLoader length: {len(dp_data_loader)}, original: {len(data_loader)}")
+print("DPDataLoader sampler: ", dp_data_loader.batch_sampler)
 #
 # # 检测每次参与训练的数据大小
 # batch_size = []
