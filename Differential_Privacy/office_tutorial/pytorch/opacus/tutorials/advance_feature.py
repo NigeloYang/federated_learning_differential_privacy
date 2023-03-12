@@ -94,18 +94,18 @@ dp_data_loader = DPDataLoader.from_data_loader(data_loader, distributed=False)
 print("Is dataset the same: ", dp_data_loader.dataset == data_loader.dataset)
 print(f"DPDataLoader length: {len(dp_data_loader)}, original: {len(data_loader)}")
 print("DPDataLoader sampler: ", dp_data_loader.batch_sampler)
-#
-# # 检测每次参与训练的数据大小
-# batch_size = []
-# for x,y in data_loader:
-#     batch_size.append(len(x))
-#
-# dp_batch_size = []
-# for x,y in dp_data_loader:
-#     dp_batch_size.append(len(x))
-# print(f' original data_loader batchSize:{batch_size} \n dp_data_loader batchSize:{dp_batch_size}')
 
-'Optimizer ===> DPOptimizer'
+# 检测每次参与训练的数据大小
+batch_size = []
+for x,y in data_loader:
+    batch_size.append(len(x))
+
+dp_batch_size = []
+for x,y in dp_data_loader:
+    dp_batch_size.append(len(x))
+print(f' original data_loader batchSize:{batch_size} \n dp_data_loader batchSize:{dp_batch_size}')
+
+# 4. Optimizer ===> DPOptimizer
 from opacus.optimizers import DPOptimizer
 
 sample_rate = 1/len(data_loader)
@@ -118,7 +118,7 @@ optimizer = DPOptimizer(
     expected_batch_size=expected_batch_size,
 )
 
-'RDPAccountant'
+# 5. RDPAccountant 隐私预算值统计
 from opacus.accountants import RDPAccountant
 
 accountant = RDPAccountant()
