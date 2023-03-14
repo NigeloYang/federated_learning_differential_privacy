@@ -10,6 +10,10 @@
 /Federated_Learning/paper_model/FedAvg/pytorch/save
 /Federated_Learning/paper_model/FLAME/data
 
+#v python
+/python/advance/smtp_u.py
+
+
 # 忽略 pytorch 文件中的数据集
 /pytorch/office_tutorial/data
 /pytorch/office_tutorial/model
