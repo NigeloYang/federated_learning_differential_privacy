@@ -965,7 +965,7 @@ import tensorflow as tf
 y_true = [[[0.]]]
 y_pred = [[[0.5]]]
 loss = tf.keras.losses.binary_crossentropy(y_true, y_pred, from_logits=True)
-# loss = -(1/1)*(0 * tf.Math.log(0.5) + (1 - 0) * tf.Math.log(1 - 0.5))
+# loss = -(1/1)*(0 * tf.math.log(0.5) + (1 - 0) * tf.math.log(1 - 0.5))
 loss.numpy()  # 0.974077
 
 # (batch_size = 1, number of samples = 4)
@@ -1019,7 +1019,7 @@ import tensorflow as tf
 
 y_true = [[[0.,1.]]]
 y_pred = [[[0.4,0.6]]]# 假设已经经过了softmax，所以和必须为1
-# loss = -( 0*tf.Math.log(0.4) + 1*tf.Math.log(0.6) )
+# loss = -( 0*tf.math.log(0.4) + 1*tf.math.log(0.6) )
 loss = tf.keras.losses.categorical_crossentropy(y_true, y_pred)
 loss.numpy() # 0.5108256
 
