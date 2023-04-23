@@ -6,35 +6,41 @@
 
 📧 yangqiantao@outlook.com
 
-Keras: https://keras-zh.readthedocs.io
+## 技术
+- [Keras](https://keras-zh.readthedocs.io)
+- [Tensorflow](https://tensorflow.google.cn)
+- [PyTorch](https://pytorch.org/tutorials/)
 
-Tensorflow: https://tensorflow.google.cn
-
-pytorch:
-
-## algorithm 篇
+## Algorithm
 主要：主要记录基础算法题，包括数组，栈，队列，动态规划，树等相关基础算法内容
 技术：python
 
-## Differential Privacy 篇
+## Differential Privacy
 主要：主要记录 差分隐私 基础知识以及在联邦学习中的应用
-技术：tensorflow pytorch
+技术：Tensorflow, PyTorch
 
-## Federated Learning篇  
-目标：联邦学习基础知识、案例、paper models
-技术：tensorflow pytorch
+## Federated Learning  
+目标：分享联邦学习基础知识, 相关文章，代码
+技术：Tensorflow, PyTorch
 
 ## pre_data
-主要记录与数据特征处理相关的知识：e.g: numpy pandas matplotlib scipy
+目标：主要记录与数据特征处理相关的知识
+技术：numpy、pandas、matplotlib、scipy
+
+## python
+目标：记录python的一些基础知识
 
 ## pytorch 篇
-目标：记录 pytorch 基础知识、API、以及案例
+目标：记录 pytorch 基础知识、API、和基础内容
 
 ## tensorflow 篇
-目标：Tensorflow基础知识、Tensorflow.API、Tensorflow 案例
+目标：Tensorflow的基础知识、API、和基础内容
 
 ## common_symbols.md
-主要记录文章出现的一些符号：可以使用 latex 语法
+目标：记录 paper 中出现的数学符号以及对应的含义
+
+## 联邦学习平台
+- [Fed-DP](https://github.com/NigeloYang/Fed-DP)
 
 
 
