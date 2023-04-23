@@ -1,4 +1,5 @@
 .idea/
+**/__pycache__
 
 # 忽略 DP 中的数据
 /Differential_Privacy/office_tutorial/pytorch/data
@@ -12,7 +13,6 @@
 
 #v python
 /python/advance/smtp_u.py
-
 
 # 忽略 pytorch 文件中的数据集
 /pytorch/office_tutorial/data
