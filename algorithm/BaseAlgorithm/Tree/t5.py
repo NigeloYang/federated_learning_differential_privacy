@@ -62,8 +62,8 @@ if __name__ == "__main__":
     
     print('\n 验证二叉搜索树结果:', Solution().inorder(Solution().sortedArrayToBST(nums)))
     print('\n 验证二叉搜索树结果:', Solution().sortedArrayToBST(nums2))
-    # tree1 = trees.Tree()
-    # tree2 = trees.Tree()
+    # tree1 = trees.tree()
+    # tree2 = trees.tree()
     #
     # tree1.createTree(data)
     # tree1.breadth_travel()
