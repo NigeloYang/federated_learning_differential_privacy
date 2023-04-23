@@ -1,4 +1,4 @@
-'''主要记录 tf.math FL_API 方法'''
+'''主要记录 tf.Math FL_API 方法'''
 
 import tensorflow as tf
 
