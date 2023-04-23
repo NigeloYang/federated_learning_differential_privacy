@@ -88,7 +88,7 @@ class FTRLState(object):
 
 
 class DPFTRLMServerOptimizer(ServerOptimizerBase):
-  """Momentum FTRL Optimizer with Tree aggregation for DP noise.
+  """Momentum FTRL Optimizer with tree aggregation for DP noise.
   There are two options of the tree aggregation algorithm:
   the baseline method `tfp.tree_aggregation.TreeAggregator`, and the efficient
   method `tfp.tree_aggregation.EfficientTreeAggregator` , which is controlled by
