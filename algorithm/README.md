@@ -2,12 +2,24 @@
 主要记录初中高级算法
 
 ## BaseAlgorithm
-主要内容是记录leetcode中的基础算法学习，主要分为以下几个目录  
-- [Arrar](./BaseAlgorithm/Array): 记录数组相关算法 
-- [String](./BaseAlgorithm/String): 记录字符串相关算法 
-- [Linkedlist](./BaseAlgorithm/String): 记录链表相关算法 
-- [Tree](./BaseAlgorithm/Tree): 记录树的基础算法
+主要内容是记录 leetcode 中的基础算法，分为以下内容：
+- [Arrar](./BaseAlgorithm/array): 记录数组相关算法 
+- [DesignQuestion](./BaseAlgorithm/designQuestion): 记录设计问题算法
+- [DynamicPlane](./baseAlgorithm/dynamicPlane): 记录动态规划算法
+- [Linkedlist](./BaseAlgorithm/linkedlist): 记录链表相关算法 
+- [Math](./BaseAlgorithm/math): 记录数学相关算法
+- [Others](./BaseAlgorithm/others): 记录与或非等算法
+- [SortAndSearch](./BaseAlgorithm/sortAndSearch)：记录排序和搜索算法
+- [String](./BaseAlgorithm/string): 记录字符串算法
+- [Tree](./BaseAlgorithm/tree): 记录树的算法
 
 
-# 重要说明
-算法知识的内容已经迁移到仓库[federated_learning_differential_privacy](https://github.com/NigeloYang/federated_learning_differential_privacy) 不在进行上传新的算法内容
+## IntermediateAlgorithm
+主要内容是记录 leetcode 中的中级算法，分为以下内容：
+- array
+
+
+## IllustrateAlgorithm
+主要内容是记录 leetcode 中的图解算法数据结构，分为以下内容：  
+- [datastructural](./IllustrateAlgorithm/datastructural): 记录数据结构相关算法 
+- [dynamic](./IllustrateAlgorithm/dynamic): 记录动态规划相关算法
