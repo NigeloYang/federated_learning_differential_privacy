@@ -21,5 +21,6 @@
 
 ## IllustrateAlgorithm
 主要内容是记录 leetcode 中的图解算法数据结构，分为以下内容：  
-- [datastructural](./IllustrateAlgorithm/datastructural): 记录数据结构相关算法 
-- [dynamic](./IllustrateAlgorithm/dynamic): 记录动态规划相关算法
+- [datastructural](./IllustrateAlgorithm/datastructural): 数据结构
+- [dynamic](./IllustrateAlgorithm/dynamic): 动态规划
+- [divideandconquer](./IllustrateAlgorithm/divideandconquer): 分治算法
