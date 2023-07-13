@@ -6,11 +6,6 @@
 
 本文中的所有 `code` 在不说明的情况下都是基于: `Tensorflow`,`pytorch` 编写
 
-## Technology
-- [Keras](https://keras-zh.readthedocs.io)
-- [Tensorflow](https://tensorflow.google.cn)
-- [PyTorch](https://pytorch.org/tutorials/)
-
 ## Differential Privacy
 主要：主要记录 `差分隐私` 的基础知识、文章以及如何在联邦学习中应用
 
@@ -37,6 +32,11 @@
 
 ## common_symbols.md
 目标：记录 paper 中出现的数学符号以及对应的含义
+
+## Technology
+- [Keras](https://keras-zh.readthedocs.io)
+- [Tensorflow](https://tensorflow.google.cn)
+- [PyTorch](https://pytorch.org/tutorials/)
 
 
 
