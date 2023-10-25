@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2023/9/16
+from typing import List
+
 
 class Solution:
     def minMoney(self, arr: List[int], aim: int) -> int:
