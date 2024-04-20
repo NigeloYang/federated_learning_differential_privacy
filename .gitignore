@@ -2,14 +2,14 @@
 **/__pycache__
 
 # 忽略 DP 中的数据
-/Differential_Privacy/office_tutorial/pytorch/data
+/differential_privacy/office_tutorial/pytorch/data
 
 # federated learning 文件中的数据集
-/Federated_Learning/paper_model/DPFL/FDP/config
-/Federated_Learning/paper_model/DPFL/FedAvg/data
-/Federated_Learning/paper_model/DPFL/FedAvg/pytorch/logs
-/Federated_Learning/paper_model/DPFL/FedAvg/pytorch/save
-/Federated_Learning/paper_model/DPFL/FLAME/data
+/federated_learning/paper_model/DPFL/FDP/config
+/federated_learning/paper_model/DPFL/FedAvg/data
+/federated_learning/paper_model/DPFL/FedAvg/pytorch/logs
+/federated_learning/paper_model/DPFL/FedAvg/pytorch/save
+/federated_learning/paper_model/DPFL/FLAME/data
 
 #v python
 /python/advance/smtp_u.py

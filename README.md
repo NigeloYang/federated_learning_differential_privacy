@@ -27,9 +27,10 @@
 
 #### 本项目仅供学习使用，如有侵权请联系作者删除,欢迎补充说明 ❤️。
 
-📧 yangqiantao@126.com
+## Contact
+如果对差分隐私联邦学习项目有任何技术上的问题，请通过 `Github issues` 或者 `Email` 联系我
 
-本文中的所有 `code` 在不说明的情况下都是基于: `Tensorflow`,`pytorch` 编写
+- 📧 yangqiantao@126.com
 
 
 
