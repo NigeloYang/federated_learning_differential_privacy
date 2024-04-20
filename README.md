@@ -1,4 +1,6 @@
 ## 项目介绍
+https://img.shields.io/badge/License-MIT-blue.svg 
+
 本项目主要记录了联邦学习和差分隐私内容，方便初学者快速了解与联邦学习、差分隐私相关的基础知识内容。此外，该项目在记录相关知识的同时也扩展了
 一些其它内容，例如，Python、TensorFlow、PyTorch、AI、数据预处理、LeetCode算法等。
 
