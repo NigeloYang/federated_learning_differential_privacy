@@ -8,7 +8,7 @@ import seaborn as sns
 
 # 使用keras.utils.get_file函数获取远程数据集
 origin = "http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data"
-dataset_path = keras.utils.get_file("D:/WorkSpace/tensorflow-practice/tensorflow/office_tutorial/data/auto-mpg.data", origin)
+dataset_path = keras.utils.get_file("D:/WorkSpace/tensorflow-practice/tensorflow/dp_office_tutorial/data/auto-mpg.data", origin)
 print('打印数据的存储路径', dataset_path)
 
 

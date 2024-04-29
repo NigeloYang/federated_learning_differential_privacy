@@ -507,7 +507,7 @@ Swish 激活函数的主要优点如下：
         形如(batch_size, ..., units)的 nD 张量，最常见的情况为(batch_size, units)的 2D 张量
 
 ```python
-# office_tutorial
+# dp_office_tutorial
 import tensorflow as tf
 
 # 创建一个模型，并且采用 shape= (None, 16) 的输入数组, 输出数组为 shape=(None, 32)。注意在第一层之后，你不需要再指定输入的大小了：
@@ -559,7 +559,7 @@ print(model.output_shape)  # (None, 32)
         形如（samples，new_steps，nb_filter）的3D张量，因为有向量填充的原因，steps的值会改变
 
 ```python
-# office_tutorial
+# dp_office_tutorial
 import tensorflow as tf
 
 # 输入是 128 个长度的向量，有 10 个时间步长，批量大小为 4
