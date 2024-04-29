@@ -25,11 +25,10 @@ s 是 f 的敏感度，而 N(σ**2) 表示从中心为 0 且方差 σ**2 (sigma*
 满足`(ϵ′, δ′)-差分隐私`，其中`ϵ′ = 2ϵ * sqrt(2 * k * log(1/δ′))`
 '''
 
-import matplotlib.pyplot as plt
-
-plt.style.use('seaborn-whitegrid')
 import pandas as pd
 import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
 
 delta = 10e-5
 epsilon = 1
@@ -43,7 +42,6 @@ gauss = [np.random.normal(loc=0, scale=sigma) for x in range(100000)]
 plt.hist(laplace, bins=50, label='Laplace')
 plt.hist(gauss, bins=50, alpha=.8, label='Gaussian')
 plt.legend()
-
 plt.show()
 
 # 高级组合，顺序组合

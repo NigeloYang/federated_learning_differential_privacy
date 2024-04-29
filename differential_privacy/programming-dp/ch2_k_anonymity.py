@@ -22,24 +22,25 @@ import matplotlib.pyplot as plt
 
 plt.style.use('seaborn-whitegrid')
 raw_data = {
-  'first_name': ['Jason', 'Molly', 'Tina', 'Jake', 'Amy'],
-  'last_name': ['Miller', 'Jacobson', 'Ali', 'Milner', 'Cooze'],
-  'age': [42, 52, 36, 24, 73],
-  'preTestScore': [4, 24, 31, 2, 3],
-  'postTestScore': [25, 94, 57, 62, 70]
-}
+    'first_name': ['Jason', 'Molly', 'Tina', 'Jake', 'Amy'],
+    'last_name': ['Miller', 'Jacobson', 'Ali', 'Milner', 'Cooze'],
+    'age': [42, 52, 36, 24, 73],
+    'preTestScore': [4, 24, 31, 2, 3],
+    'postTestScore': [25, 94, 57, 62, 70]}
+# df = pd.DataFrame(raw_data, columns = ['first_name', 'last_name', 'age', 'preTestScore', 'postTestScore'])
 df = pd.DataFrame(raw_data, columns=['age', 'preTestScore', 'postTestScore'])
 print(df)
 
 # 定义一个 k-匿名函数
-def isK_Anonymized(df, k):
+def isKAnonymized(df, k):
   for index, row in df.iterrows():
     query = ' & '.join([f'{col} == {row[col]}' for col in df.columns])
+    # print(query)
     rows = df.query(query)
     # print(rows)
     if len(rows) < k:
       return False
   return True
 
-print(isK_Anonymized(df, 1))
-print(isK_Anonymized(df, 2))
+print(isKAnonymized(df, 1))
+print(isKAnonymized(df, 2))

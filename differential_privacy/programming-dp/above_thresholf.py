@@ -4,13 +4,9 @@ import pandas as pd
 
 plt.style.use('seaborn-whitegrid')
 
-names = ['Age', 'Workclass', 'fnlwgt', 'Education', 'Education_Num', 'Marital_Status', 'Occupation', 'Relationship',
-         'Race', 'Sex', 'Capital_Gain', 'Capital_Loss', 'Hours_per_week', 'Country', 'income']
-
-# 获取原始数据集
-adult_data = pd.read_csv('../data/adult.csv', names=names)
-print('原始数据集', adult_data.shape)
-print(adult_data.head())
+adult = pd.read_csv('./data/adult_with_pii.csv')
+print('原始数据集', adult.shape)
+print(adult.head(2))
 
 
 def laplace_mech(v, sensitivity, epsilon):
@@ -36,7 +32,7 @@ def age_sum_query(df, b):
   return df['Age'].clip(lower=0, upper=b).sum()
 
 
-print('search age sum:', age_sum_query(adult_data, 30))
+print('search age sum:', age_sum_query(adult, 30))
 
 
 def naive_select_b(df, query, epsilon):
@@ -60,7 +56,7 @@ def naive_select_b(df, query, epsilon):
   return bs[-1]
 
 
-print(naive_select_b(adult_data, age_sum_query, 1))
+print(naive_select_b(adult, age_sum_query, 1))
 
 
 # 确定使用稀疏向量技术的b最佳值的索引
@@ -72,11 +68,11 @@ bs = range(1, 150, 5)
 queries = [create_query(b) for b in bs]
 epsilon = .1
 
-print('above_threshold result: ', bs[above_threshold(adult_data, queries, 0, epsilon)])
+print('above_threshold result: ', bs[above_threshold(adult, queries, 0, epsilon)])
 
 plt.xlabel('Chosen Value of "b"')
 plt.ylabel('Number of Occurrences')
-plt.hist([bs[above_threshold(adult_data, queries, 0, epsilon)] for i in range(20)]);
+plt.hist([bs[above_threshold(adult, queries, 0, epsilon)] for i in range(20)]);
 plt.show()
 
 
@@ -103,8 +99,8 @@ def auto_avg(df, epsilon):
   return noisy_sum / noisy_count
 
 
-print('Age result:', auto_avg(adult_data['Age'], 1))
-print('Capital_Gain result:', auto_avg(adult_data['Capital_Gain'], 1))
+print('Age result:', auto_avg(adult['Age'], 1))
+print('Capital_Gain result:', auto_avg(adult['Capital Gain'], 1))
 
 
 # 找到大于所有索引的值 也就是稀疏算法：Sparse Algorithm
@@ -133,4 +129,4 @@ def sparse(df, queries, c, T, epsilon):
 
 
 epsilon = 1
-print(sparse(adult_data['Age'], queries, 3, 0, epsilon))
+print(sparse(adult['Age'], queries, 3, 0, epsilon))
