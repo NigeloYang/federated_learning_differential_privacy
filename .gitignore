@@ -2,7 +2,7 @@
 **/__pycache__
 
 # 忽略 DP 中的数据
-/differential_privacy/office_tutorial/pytorch/data
+/differential_privacy/dp_office_tutorial/pytorch/data
 
 # federated learning 文件中的数据集
 /federated_learning/paper_model/DPFL/FDP/config
