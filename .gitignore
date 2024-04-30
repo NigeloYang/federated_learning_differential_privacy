@@ -1,6 +1,13 @@
 .idea/
 **/__pycache__
 
+/AI/data
+/AI/bert_base_chinese
+
+# 忽略 ai_attack 中的数据
+/ai_attack/data
+/ai_attack/bert_model
+
 # 忽略 DP 中的数据
 /differential_privacy/dp_office_tutorial/pytorch/data
 

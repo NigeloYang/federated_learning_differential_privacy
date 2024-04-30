@@ -10,13 +10,14 @@
 
 - 神经网络模型
 - 一种 `IID` 和 7 种 `Non-IID` 数据分布划分
-- 5 种个性化联邦学习框架，1 种联邦混洗模型
-- 所有模型结构均引入差分隐私技术，并可以自定义差分添加机制
+- 经典FedAvg模型、4 种个性化联邦学习框架、1 种联邦混洗模型
+- 所有模型结构均已引入差分隐私技术，并可以自定义差分隐私机制
 
 未来，Fed-DP平台将引入更多的`顶会、顶刊`中的联邦学习模型，并加入多方安全计算、同态加密、区块链、攻击手段等技术内容。更多内容可以参考 [Fed-DP](https://github.com/NigeloYang/Fed-DP) 项目
 
 ## Directory Content
-- AI：记录人工智能技术，如Transform
+- AI：记录人工智能技术，如Transform、CNN等基础入门模型技术
+- ai_attack: 记录人工智能模型中常见的攻击手段，如数据投毒、模型投毒、后门攻击、推理攻击等
 - algorithm：记录leetcode、nowcode 算法实现 
 - data_preprocessing：主要记录与数据特征处理相关的知识，包含numpy、pandas、matplotlib、scipy 
 - differential_privacy：主要记录 `差分隐私` 的基础知识、文章以及如何在联邦学习中应用 

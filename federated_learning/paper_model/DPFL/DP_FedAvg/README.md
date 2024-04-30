@@ -22,7 +22,7 @@ This is a simple implementation of **Federated Learning (FL)** with **Differenti
 
 ### FL model parameters
 ```python
-# code segment in test.py/test.ipynb
+# code segment in cnn_dp_1.py/test.ipynb
 lr = 0.1
 fl_param = {
     'output_size': 10,          # number of units in output layer
