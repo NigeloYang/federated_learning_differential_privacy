@@ -119,6 +119,40 @@ def Test(model, test_loader, criterion, device):
     print('| Test | Acc: {:.6f} | loss: {:.6f} | '.format(acc / total * 100, np.mean(losses)))
 
 
+def diy_test(model, tokenizer, device):
+    labels = {'news_story': 0,
+              'news_culture': 1,
+              'news_entertainment': 2,
+              'news_sports': 3,
+              'news_finance': 4,
+              'news_house': 5,
+              'news_car': 6,
+              'news_edu': 7,
+              'news_tech': 8,
+              'news_military': 9,
+              'news_travel': 10,
+              'news_world': 11,
+              'stock': 12,
+              'news_agriculture': 13,
+              'news_game': 14
+              }
+    
+    text = '京城最值得你来场文化之旅的博物馆保利集团,马未都,中国科学技术馆,博物馆,新中国'
+    text_input = tokenizer(text, padding='max_length', max_length=512, truncation=True, return_tensors="pt")
+    mask = text_input['attention_mask'].to(device)
+    input_id = text_input['input_ids'].squeeze(1).to(device)
+    
+    pre_res = model(input_id, mask)
+    pre_res = pre_res.argmax(dim=1)
+    pre_res = pre_res.item()
+    
+    pre_label = None
+    for key, value in labels.items():
+        if value == pre_res:
+            pre_label = key
+    print(f'lable is: {pre_label}')
+
+
 def get_dataset(batch_size, tokenizer):
     print('正在处理数据,形成 DataLoader ......')
     # 获取数据
@@ -211,3 +245,6 @@ if __name__ == "__main__":
     torch.save(model.state_dict(), './save_model/bert-toutiao.pt')
     
     Test(model, test_loader, criterion, device)
+    
+    print('\n进入自定义输入文本数据测试')
+    diy_test(model, tokenizer, device)
