@@ -2,7 +2,7 @@
 **/__pycache__
 
 /AI/data
-/AI/bert_base_chinese
+/AI/bert_model
 
 # 忽略 ai_attack 中的数据
 /ai_attack/data
