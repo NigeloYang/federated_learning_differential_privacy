@@ -149,6 +149,40 @@ def get_dataset(batch_size, tokenizer):
     return train_loader, test_loader
 
 
+def diy_test(model, tokenizer, device):
+    labels = {'news_story': 0,
+              'news_culture': 1,
+              'news_entertainment': 2,
+              'news_sports': 3,
+              'news_finance': 4,
+              'news_house': 5,
+              'news_car': 6,
+              'news_edu': 7,
+              'news_tech': 8,
+              'news_military': 9,
+              'news_travel': 10,
+              'news_world': 11,
+              'stock': 12,
+              'news_agriculture': 13,
+              'news_game': 14
+              }
+    
+    text = '京城最值得你来场文化之旅的博物馆保利集团,马未都,中国科学技术馆,博物馆,新中国'
+    text_input = tokenizer(text, padding='max_length', max_length=512, truncation=True, return_tensors="pt")
+    mask = text_input['attention_mask'].to(device)
+    input_id = text_input['input_ids'].squeeze(1).to(device)
+    
+    pre_res = model(input_id, mask)
+    pre_res = pre_res.argmax(dim=1)
+    pre_res = pre_res.item()
+    
+    pre_label = None
+    for key, value in labels.items():
+        if value == pre_res:
+            pre_label = key
+    print(f'lable is: {pre_label}')
+
+
 if __name__ == "__main__":
     # 判断是否使用GPU
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -177,3 +211,6 @@ if __name__ == "__main__":
     # torch.save(model.state_dict(), 'bert-toutiao.pt')
     
     Test(model, test_loader, criterion, device)
+    
+    print('\n自定义输入文本数据进行测试:')
+    diy_test(model, tokenizer, device)
