@@ -96,7 +96,6 @@ def train(model, train_loader, optimizer, criterion, privacy_engine, epoch, delt
         print(images)
 
         images = images.to(device)
-        print(images)
         target = target.to(device)
         total += len(target)
 
@@ -120,13 +119,13 @@ def train(model, train_loader, optimizer, criterion, privacy_engine, epoch, delt
                     epoch, 100. * (idx + 1) / len(train_loader), acc / total * 100, np.mean(losses), epsilon,
                     delta))
 
+          
 
 # 测试模型
 def test(model, test_loader, criterion, device):
     model.eval()
     losses = []
     top_acc = []
-    
     with torch.no_grad():
         for images, target in test_loader:
             images = images.to(device)
@@ -141,6 +140,7 @@ def test(model, test_loader, criterion, device):
             
             loss = criterion(output, target)
             losses.append(loss.item())
+
     
     # 计算平均准确度
     acc_avg = np.mean(top_acc)
