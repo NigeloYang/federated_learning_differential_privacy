@@ -201,11 +201,11 @@ class Encoder(nn.Module):
             [EncoderLayer(enc_dim, num_heads, dff, dropout_posffn, dropout_attn) for _ in range(num_layers)]
         )
     
-    def forward(self, X, X_lens, mask=None):
-        batch_size, seq_len, d_model = X.shape
+    def forward(self, feat_input, feat_input_bs, mask=None):
+        batch_size, seq_len, d_model = feat_input.shape
         
-        # add position embedding
-        out = X + self.pos_emb(torch.arange(seq_len, device=X.device))  # (batch_size, seq_len, d_model)
+        # add position embedding,  (batch_size, seq_len, d_model)
+        out = feat_input + self.pos_emb(torch.arange(seq_len, device=feat_input.device))
         
         # add embedding dropout
         out = self.emb_dropout(out)
@@ -284,8 +284,10 @@ class Decoder(nn.Module):
         # output embedding
         self.out_emb = nn.Embedding(tar_vocab_size, dec_dim)
         self.dropout_emb = nn.Dropout(p=dropout_emb)  # embedding dropout
+        
         # position embedding
         self.pos_emb = nn.Embedding.from_pretrained(pos_sinusoid_embedding(tar_len_emb, dec_dim), freeze=True)
+        
         # decoder layers
         self.layers = nn.ModuleList(
             [DecoderLayer(dec_dim, num_heads, dff, dropout_posffn, dropout_attn) for _ in range(num_layers)]
@@ -305,30 +307,31 @@ class Decoder(nn.Module):
 
 
 class Transformer(nn.Module):
-    def __init__(self, frontend, encoder, decoder, dec_out_dim, vocab):
+    def __init__(self, feat_frontend, encoder, decoder, dec_out_dim, vocab):
         super().__init__()
-        self.frontend = frontend  # feature extractor
+        self.feat_frontend = feat_frontend  # feature extractor
         self.encoder = encoder
         self.decoder = decoder
         self.linear = nn.Linear(dec_out_dim, vocab)
     
     def forward(self, fbank_feature, feat_lens, labels):
-        X_lens, labels = feat_lens.long(), labels.long()
+        feat_lens, labels = feat_lens.long(), labels.long()
         b = fbank_feature.size(0)
         device = fbank_feature.device
         
         # frontend
-        feature_out = self.frontend(fbank_feature)
+        feature_out = self.feat_frontend(fbank_feature)
+        print('feature_extractor(fbank_feature): ', feature_out.shape)
         max_feat_len = feature_out.size(1)  # compute after frontend because of optional subsampling
         max_label_len = labels.size(1)
         
         # encoder
-        enc_mask = get_len_mask(b, max_feat_len, X_lens, device)
-        enc_out = self.encoder(feature_out, X_lens, enc_mask)
+        enc_mask = get_len_mask(b, max_feat_len, feat_lens, device)
+        enc_out = self.encoder(feature_out, feat_lens, enc_mask)
         
         # decoder
         dec_mask = get_subsequent_mask(b, max_label_len, device)
-        dec_enc_mask = get_enc_dec_mask(b, max_feat_len, X_lens, max_label_len, device)
+        dec_enc_mask = get_enc_dec_mask(b, max_feat_len, feat_lens, max_label_len, device)
         dec_out = self.decoder(labels, enc_out, dec_mask, dec_enc_mask)
         
         logits = self.linear(dec_out)
@@ -337,6 +340,10 @@ class Transformer(nn.Module):
 
 
 if __name__ == "__main__":
+    print(torch.__version__)
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    print('device: ', device)
+    
     # constants
     batch_size = 16  # batch size
     max_feat_len = 100  # the maximum length of input feature sequence
@@ -346,30 +353,31 @@ if __name__ == "__main__":
     vocab_size = 26  # the size of vocabulary
     
     # dummy data
-    fbank_feature = torch.randn(batch_size, max_feat_len, fbank_dim)  # input sequence
-    feat_lens = torch.randint(1, max_feat_len, (batch_size,))  # the length of each input sequence in the batch
-    labels = torch.randint(0, vocab_size, (batch_size, max_label_len))  # output sequence
-    label_lens = torch.randint(1, max_label_len, (batch_size,))  # the length of each output sequence in the batch
-    print('input sequence：', fbank_feature.shape)
-    print('the length of each input sequence in the batch：', feat_lens.shape)
-    print('output sequence：', labels.shape)
-    print('the length of each output sequence in the batch：', label_lens.shape)
+    fbank_feature = torch.randn(batch_size, max_feat_len, fbank_dim).to(device)  # input sequence
+    feat_lens = torch.randint(1, max_feat_len, (batch_size,)).to(device)  # the length of each input sequence in the batch
+    labels = torch.randint(0, vocab_size, (batch_size, max_label_len)).to(device)  # output sequence
+    label_lens = torch.randint(1, max_label_len, (batch_size,)).to(device)  # the length of each output sequence in the batch
+    print('input sequence：fbank_feature = ', fbank_feature.shape)
+    print('the length of each input sequence in the batch：feat_lens = ', feat_lens.shape)
+    print('output sequence：labels = ', labels.shape)
+    print('the length of each output sequence in the batch：label_lens = ', label_lens.shape)
     
     # create model.
     # a linear layer to simulate the audio feature extractor
-    feature_extractor = nn.Linear(fbank_dim, hidden_dim)
+    feature_extractor = nn.Linear(fbank_dim, hidden_dim).to(device)
     
     encoder = Encoder(
         dropout_emb=0.1, dropout_posffn=0.1, dropout_attn=0.,
         num_layers=6, enc_dim=hidden_dim, num_heads=8, dff=2048, max_seq_len=2048
-    )
+    ).to(device)
     
     decoder = Decoder(
         dropout_emb=0.1, dropout_posffn=0.1, dropout_attn=0.,
         num_layers=6, dec_dim=hidden_dim, num_heads=8, dff=2048, tar_len_emb=2048, tar_vocab_size=vocab_size
-    )
+    ).to(device)
     
     transformer = Transformer(feature_extractor, encoder, decoder, hidden_dim, vocab_size)
+    transformer.to(device)
     
     # forward check
     logits = transformer(fbank_feature, feat_lens, labels)
