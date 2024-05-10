@@ -2,30 +2,37 @@
 # Time    : 2024/5/8
 # By      : Yang
 
-# source https://github.com/xiabingquan, add readme
-
 import numpy as np
-
 import torch
 import torch.nn as nn
 
 
 # mask
-def get_len_mask(b, max_len, feat_lens, device):
-    attn_mask = torch.ones((b, max_len, max_len), device=device)
+def get_len_mask(b, max_src_len, feat_len, device):
+    """ encoder mask
+    Args:
+        b: batch-size.
+        max_src_len: the max length of the all source seqeunce.
+        feat_len: the feature dimension length of each source seqeunce.
+        device: cuda or cpu.
+    """
+    # mask: [batch_size,  max_src_len,  max_src_len]
+    attn_mask = torch.ones((b, max_src_len, max_src_len), device=device)
     for i in range(b):
-        attn_mask[i, :, :feat_lens[i]] = 0
+        attn_mask[i, :, :feat_len[i]] = 0
     return attn_mask.to(torch.bool)
 
 
-def get_subsequent_mask(b, max_len, device):
-    """
+def get_subsequent_mask(b, max_tgt_len, device):
+    """ decoder mask
     Args:
         b: batch-size.
-        max_len: the length of the whole seqeunce.
+        max_tgt_len: the max length of the all target seqeunce.
         device: cuda or cpu.
     """
-    return torch.triu(torch.ones((b, max_len, max_len), device=device), diagonal=1).to(torch.bool)
+    #  Generate the upper triangular matrix, [batch_size, max_tgt_len, max_tgt_len]
+    sub_mask = torch.triu(torch.ones((b, max_tgt_len, max_tgt_len), device=device), diagonal=1)
+    return sub_mask.to(torch.bool)
 
 
 def get_enc_dec_mask(b, max_feat_len, feat_lens, max_label_len, device):
@@ -36,24 +43,24 @@ def get_enc_dec_mask(b, max_feat_len, feat_lens, max_label_len, device):
 
 
 # position
-def pos_sinusoid_embedding(seq_len, d_model):
-    embeddings = torch.zeros((seq_len, d_model))
+def positionalEncoding(seq_len, d_model):
+    posi_encode = torch.zeros((seq_len, d_model))
     for i in range(d_model):
-        f = torch.sin if i % 2 == 0 else torch.cos
-        embeddings[:, i] = f(torch.arange(0, seq_len) / np.power(1e4, 2 * (i // 2) / d_model))
-    return embeddings.float()
+        f = torch.sin if i % 2 == 0 else torch.cos    # 字嵌入维度为偶数时
+        posi_encode[:, i] = f(torch.arange(0, seq_len) / np.power(1e4, 2 * (i // 2) / d_model))
+    return posi_encode.float()  # enc_inputs: [seq_len, d_model]
 
 
 class MultiHeadAttention(nn.Module):
     def __init__(self, d_k, d_v, d_model, num_heads, p=0.):
         super(MultiHeadAttention, self).__init__()
-        self.d_model = d_model
         self.d_k = d_k
         self.d_v = d_v
+        self.d_model = d_model
         self.num_heads = num_heads
         self.dropout = nn.Dropout(p)
         
-        # linear projections,
+        # linear projections, d_k * num_heads = d_model
         self.W_Q = nn.Linear(d_model, d_k * num_heads)
         self.W_K = nn.Linear(d_model, d_k * num_heads)
         self.W_V = nn.Linear(d_model, d_v * num_heads)
@@ -66,23 +73,25 @@ class MultiHeadAttention(nn.Module):
         nn.init.normal_(self.W_V.weight, mean=0, std=np.sqrt(2.0 / (d_model + d_v)))
         nn.init.normal_(self.W_out.weight, mean=0, std=np.sqrt(2.0 / (d_model + d_v)))
     
-    def forward(self, Q, K, V, attn_mask):
-        N = Q.size(0)  # batch_size
-        q_len, k_len = Q.size(1), K.size(1)
+    def forward(self, input_Q, input_K, input_V, attn_mask):
+        print('MultiHeadAttention',  input_Q.size(), type( input_Q))
+        
+        batch_size = input_Q.size(0)
+        len_q, len_k = input_Q.size(1), input_K.size(1)
         d_k, d_v = self.d_k, self.d_v
         num_heads = self.num_heads
         
         # multi head split, d_k = depth = d_model // num_heads
         # (batch_size, seq_len, d_model) > (batch_size, seq_len_qkv, num_heads, depth) > (batch_size, num_heads, seq_len_qkv, depth)
-        Q = self.W_Q(Q).view(N, -1, num_heads, d_k).transpose(1, 2)
-        K = self.W_K(K).view(N, -1, num_heads, d_k).transpose(1, 2)
-        V = self.W_V(V).view(N, -1, num_heads, d_v).transpose(1, 2)
+        Q = self.W_Q(input_Q).view(batch_size, -1, num_heads, d_k).transpose(1, 2)
+        K = self.W_K(input_K).view(batch_size, -1, num_heads, d_k).transpose(1, 2)
+        V = self.W_V(input_V).view(batch_size, -1, num_heads, d_v).transpose(1, 2)
         
         # scaled dot product attention, pre-process mask
         # k, v 必须有匹配的倒数第二个维度，例如：seq_len_k = seq_len_v。
         # 虽然 mask 根据其类型（填充或前瞻）有不同的形状，但是 mask 必须能进行广播转换以便求和。
         if attn_mask is not None:
-            assert attn_mask.size() == (N, q_len, k_len)
+            assert attn_mask.size() == (batch_size, len_q, len_k)
             attn_mask = attn_mask.unsqueeze(1).repeat(1, num_heads, 1, 1)  # broadcast
             attn_mask = attn_mask.bool()
         
@@ -98,12 +107,12 @@ class MultiHeadAttention(nn.Module):
         attention_weight = self.dropout(attention_weight)
         
         # calculate output: res = softmax(Q*K^T / sqrt(d_k)) * V
-        # output.shape = (batch_size, num_heads, seq_len, d_model)
+        # output.shape = (batch_size, num_heads, seq_len, depth)
         output = torch.matmul(attention_weight, V)
         
         # multi_head attention merge
-        # output.shape = (batch_size, seq_len, num_heads, d_model) ==> (batch_size, seq_len_q, d_model)
-        output = output.transpose(1, 2).contiguous().reshape(N, -1, d_v * num_heads)
+        # output.shape = (batch_size, seq_len, num_heads, depth) ==> (batch_size, src_len, d_model)
+        output = output.transpose(1, 2).contiguous().reshape(batch_size, -1, d_v * num_heads)
         output = self.W_out(output)
         
         return output
@@ -155,6 +164,8 @@ class EncoderLayer(nn.Module):
     def forward(self, enc_in, attn_mask):
         # reserve original input for later residual connections
         residual_enc = enc_in
+
+        print('Encoder layer', enc_in.size(), type(enc_in))
         
         # MultiHeadAttention forward
         attn_output = self.multi_head_attn(enc_in, enc_in, enc_in, attn_mask)
@@ -174,7 +185,7 @@ class EncoderLayer(nn.Module):
 
 class Encoder(nn.Module):
     def __init__(
-        self, dropout_emb, dropout_posffn, dropout_attn, num_layers, enc_dim, num_heads, dff, max_seq_len,
+        self, dropout_emb, dropout_posffn, dropout_attn, num_layers, enc_dim, num_heads, dff, src_len
     ):
         """
         Args:
@@ -185,13 +196,14 @@ class Encoder(nn.Module):
             enc_dim: input dimension of encoder
             num_heads: number of attention heads
             dff: dimension of PosFFN
-            max_seq_len: the maximum length of sequences
+            src_len: the maximum length of all source sequences
         """
         super(Encoder, self).__init__()
         # The maximum length of input sequence
-        self.max_seq_len = max_seq_len
+        self.src_len = src_len
         
-        self.pos_emb = nn.Embedding.from_pretrained(pos_sinusoid_embedding(max_seq_len, enc_dim), freeze=True)
+        # positional Encoding embedding
+        self.pos_emb = nn.Embedding.from_pretrained(positionalEncoding(src_len, enc_dim), freeze=True)
         
         # add embedding dropout
         self.emb_dropout = nn.Dropout(dropout_emb)
@@ -201,18 +213,20 @@ class Encoder(nn.Module):
             [EncoderLayer(enc_dim, num_heads, dff, dropout_posffn, dropout_attn) for _ in range(num_layers)]
         )
     
-    def forward(self, feat_input, feat_input_bs, mask=None):
-        batch_size, seq_len, d_model = feat_input.shape
+    def forward(self, enc_input, mask=None):
+        batch_size, src_len, d_model = enc_input.shape
         
-        # add position embedding,  (batch_size, seq_len, d_model)
-        out = feat_input + self.pos_emb(torch.arange(seq_len, device=feat_input.device))
+        # add position embedding,  (batch_size, src_len, d_model)
+        enc_out = enc_input + self.pos_emb(torch.arange(src_len, device=enc_input.device))
+       
         
         # add embedding dropout
-        out = self.emb_dropout(out)
+        enc_out = self.emb_dropout(enc_out)
+        print('Encoder', enc_out.size(), type(enc_out))
         
         # encoder layers
         for layer in self.layers:
-            out = layer(out, mask)
+            out = layer(enc_out, mask)
         
         return out
 
@@ -286,7 +300,7 @@ class Decoder(nn.Module):
         self.dropout_emb = nn.Dropout(p=dropout_emb)  # embedding dropout
         
         # position embedding
-        self.pos_emb = nn.Embedding.from_pretrained(pos_sinusoid_embedding(tar_len_emb, dec_dim), freeze=True)
+        self.pos_emb = nn.Embedding.from_pretrained(positionalEncoding(tar_len_emb, dec_dim), freeze=True)
         
         # decoder layers
         self.layers = nn.ModuleList(
@@ -327,7 +341,7 @@ class Transformer(nn.Module):
         
         # encoder
         enc_mask = get_len_mask(b, max_feat_len, feat_lens, device)
-        enc_out = self.encoder(feature_out, feat_lens, enc_mask)
+        enc_out = self.encoder(feature_out, enc_mask)
         
         # decoder
         dec_mask = get_subsequent_mask(b, max_label_len, device)
@@ -349,7 +363,7 @@ if __name__ == "__main__":
     max_feat_len = 100  # the maximum length of input feature sequence
     max_label_len = 50  # the maximum length of output labels sequence
     fbank_dim = 80  # the dimension of input feature
-    hidden_dim = 512  # the dimension of hidden layer
+    hidden_dim = 512  # the dimension of forward hidden layer
     vocab_size = 26  # the size of vocabulary
     
     # dummy data
@@ -368,7 +382,7 @@ if __name__ == "__main__":
     
     encoder = Encoder(
         dropout_emb=0.1, dropout_posffn=0.1, dropout_attn=0.,
-        num_layers=6, enc_dim=hidden_dim, num_heads=8, dff=2048, max_seq_len=2048
+        num_layers=6, enc_dim=hidden_dim, num_heads=8, dff=2048, src_len=2048
     ).to(device)
     
     decoder = Decoder(
