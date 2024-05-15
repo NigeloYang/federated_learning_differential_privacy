@@ -16,11 +16,11 @@
 3. Li, T., Sahu, A. K., Talwalkar, A., & Smith, V. (2020). Federated Learning: Challenges, Methods, and Future Directions. IEEE Signal Process. Mag., 37(3), 50-60. https://doi.org/10.1109/MSP.2020.2975749
 
 ## 文件夹介绍
-- [Customization](./Customization)  使用tensorflow实现的 FL 案例
-- [office_tutorial](./office_tutorial) 记录自己在官方指南的学习
-- [paper_model](./paper_model) 记录文献提出来的：FL Model
-- test_fl.py  用于测试在学习中的 api 使用说明
-- test_gpu.py 文件，用于检测是否有 gpu, cpu,已经是否可以使用
-- TFF_API.md 记录自己在官方学习 TFF_API 指南
+- office_tutorial: 记录自己在官方指南的学习
+- paper_model: 记录文献提出来的：FL Model
+- practicing_fl: `FL` 实现案例
+- test_fl.py: 用于测试在学习中的 api 使用说明
+- test_gpu.py: 检测是否有 gpu, cpu
+- TFF_API.md: 记录官方学习 TFF_API 指南
 
 
