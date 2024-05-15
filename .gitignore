@@ -12,6 +12,7 @@
 /differential_privacy/dp_office_tutorial/pytorch/data
 
 # federated learning 文件中的数据集
+/federated_learning/practicing_fl/data
 /federated_learning/paper_model/DPFL/FDP/config
 /federated_learning/paper_model/DPFL/FedAvg/data
 /federated_learning/paper_model/DPFL/FedAvg/pytorch/logs
