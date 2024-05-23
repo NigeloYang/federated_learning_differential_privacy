@@ -6,7 +6,7 @@ import torch
 from model.models import LeNet,CNNMnist
 
 
-class ClientCom(object):
+class ClientSpa(object):
     def __init__(self, args, train_dataset, id=-1):
         self.args = args
         self.local_model = CNNMnist().to(args.device)
@@ -19,6 +19,14 @@ class ClientCom(object):
         all_range = list(range(len(self.train_dataset)))
         data_len = int(len(self.train_dataset) / args.client_nums)
         train_indices = all_range[id * data_len: (id + 1) * data_len]
+
+        self.mask = {}
+        for name, param in self.local_model.state_dict().items():
+            p = torch.ones_like(param) * args.param_sparsity
+            if torch.is_floating_point(param):
+                self.mask[name] = torch.bernoulli(p)
+            else:
+                self.mask[name] = torch.bernoulli(p).long()
         
         self.train_loader = torch.utils.data.DataLoader(self.train_dataset, batch_size=args.batch_size,
                                                         sampler=torch.utils.data.sampler.SubsetRandomSampler(
@@ -54,31 +62,15 @@ class ClientCom(object):
             print("Local Epoch %d Done." % e)
         
         diff = dict()
+        diff_total = 0
+        diff_mask_total = 0
         for name, data in self.local_model.state_dict().items():
             diff[name] = (data - global_model.state_dict()[name])
-
-        # print("local_model.state_dict()- global_model.state_dict()")
-        # for name, layer in diff.items():
-        #     print(name, '->', layer.size())
-            
-        diff = sorted(diff.items(), key=lambda item: abs(torch.mean(item[1].float())), reverse=True)
-        # print("sort(diff)")
-        # for name, layer in diff:
-        #     print(name, '->', layer.size())
-
-        # sum1, sum2 = 0, 0
-        # for id, (name, data) in enumerate(diff):
-        #     if id < 304:
-        #         sum1 += torch.prod(torch.tensor(data.size()))
-        #     else:
-        #         sum2 += torch.prod(torch.tensor(data.size()))
-        
-        ret_size = int(self.args.compress_rate * len(diff))
-        # print('ret_size: ', ret_size)
-        # diff_res = dict(diff[:ret_size])
-        # print('dict(diff[:ret_size])')
-        # for name, layer in diff_res.items():
-        #     print(name, '->', layer.size())
-        # print('*'*50)
-        
-        return dict(diff[:ret_size])
+            diff_total += diff[name].numel()
+            # print(f"{name} total parameters:  {diff_total/(1024*1024):.3f}M")
+            diff[name] = diff[name] * self.mask[name]
+            diff_mask_total += diff[name].numel()
+            # print(f"{name} maks total parameters:  {diff_mask_total/(1024*1024):.3f}M")
+        # print(f"total parameters: {diff_total/(1024*1024):.3f}M")
+        # print(f"mask total parameters:  {diff_mask_total/(1024*1024):.3f}M")
+        return diff
