@@ -6,7 +6,7 @@ import torch
 from model.models import LeNet, CNNMnist
 
 
-class ServerCom(object):
+class ServerBack(object):
     def __init__(self, args, test_dataset):
         self.args = args
         self.global_model = CNNMnist().to(args.device)
@@ -14,17 +14,15 @@ class ServerCom(object):
         
         self.test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=args.batch_size, shuffle=True)
     
-    def model_aggregate(self, weight_accumulator, cnt):
+    def model_aggregate(self, weight_accumulator):
         for name, data in self.global_model.state_dict().items():
-            if name in weight_accumulator and cnt[name] > 0:
-                # print(cnt[name])
-                update_per_layer = weight_accumulator[name] * (1.0 / cnt[name])
-                # update_per_layer = weight_accumulator[name] * self.args.lambda
+            # print(cnt[name])
+            update_per_layer = weight_accumulator[name] * self.args.lambdas
             
-                if data.type() != update_per_layer.type():
-                    data.add_(update_per_layer.to(torch.int64))
-                else:
-                    data.add_(update_per_layer)
+            if data.type() != update_per_layer.type():
+                data.add_(update_per_layer.to(torch.int64))
+            else:
+                data.add_(update_per_layer)
     
     def model_eval(self):
         self.global_model.eval()
@@ -44,11 +42,8 @@ class ServerCom(object):
                 target = target.cuda()
             
             output = self.global_model(data)
-            
-            # print(output)
-            
-            total_loss += torch.nn.functional.cross_entropy(output, target,
-                                                            reduction='sum').item()  # sum up batch loss
+            # sum up batch loss
+            total_loss += torch.nn.functional.cross_entropy(output, target, reduction='sum').item()
             pred = output.data.max(1)[1]  # get the index of the max log-probability
             correct += pred.eq(target.data.view_as(pred)).cpu().sum().item()
         

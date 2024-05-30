@@ -25,6 +25,8 @@ class CNNMnist(nn.Module):
 
         # return F.log_softmax(x, dim=1)
         return x
+    
+
 
 class LeNet(nn.Module):
     def __init__(self):
@@ -49,12 +51,12 @@ class LeNet(nn.Module):
         out = self.fc(out)
         return out
     
-    def model_norm(self, model_1, model_2):
-        squared_sum = 0
-        for name, layer in model_1.named_parameters():
-            #	print(torch.mean(layer.data), torch.mean(model_2.state_dict()[name].data))
-            squared_sum += torch.sum(torch.pow(layer.data - model_2.state_dict()[name].data, 2))
-        return math.sqrt(squared_sum)
+def model_norm(model_1, model_2):
+    squared_sum = 0
+    for name, layer in model_1.named_parameters():
+        #	print(torch.mean(layer.data), torch.mean(model_2.state_dict()[name].data))
+        squared_sum += torch.sum(torch.pow(layer.data - model_2.state_dict()[name].data, 2))
+    return math.sqrt(squared_sum)
 
 
 if __name__ == "__main__":
