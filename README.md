@@ -22,6 +22,7 @@
 - data_preprocessing：主要记录与数据特征处理相关的知识，包含numpy、pandas、matplotlib、scipy 
 - differential_privacy：主要记录 `差分隐私` 的基础知识、文章以及如何在联邦学习中应用 
 - federated_learning：分享联邦学习的文章和代码，使用Tensorflow和PyTorch工具搭建模型
+  - practical_fl: `实现基础的联邦学习内容：后门攻击、差分隐私联邦学习、参数稀疏化、参数压缩、同态加密联邦学习`
 - math：记录常用的数学概念
 - python：主要记录 `python` 的基础知识
 - pytorch：主要记录 `pytorch` 的基础知识、API、基础实现 
