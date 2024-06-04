@@ -15,6 +15,8 @@ from client.client_compression import ClientCom
 from client.client_sparsity import ClientSpa
 from client.client_backdoor import ClientBack
 from server.server_backdoor import ServerBack
+from client.client_dp import ClientDP
+from server.server_dp import ServerDP
 
 
 def get_dataset(args):
@@ -56,11 +58,16 @@ if __name__ == "__main__":
     parser.add_argument('-lr', '--learn_rate', type=float, default=0.01)
     parser.add_argument('-mt', '--momentum', type=float, default=0.0001)
     
-    parser.add_argument('-m_t', '--model_type', type=str, default="sparsity")
+    parser.add_argument('-m_t', '--model_type', type=str, default="dp")
     
     parser.add_argument('--lambdas', type=float, default=0.5)
     parser.add_argument('--eta', type=int, default=2)
     parser.add_argument('--alpha', type=float, default=1.0)
+    parser.add_argument('--sigma', type=float, default=0.001)
+    parser.add_argument('--dp', type=bool, default=True)
+    parser.add_argument('--q', type=float, default=0.1)
+    parser.add_argument('--C', type=float, default=100.0)
+    parser.add_argument('--w', type=int, default=1)
     parser.add_argument('-cr', '--compress_rate', type=float, default=0.8)
     parser.add_argument('-sc', '--sample_clients', type=int, default=3)
     parser.add_argument('-pr', '--param_sparsity', type=float, default=0.6)
@@ -75,7 +82,7 @@ if __name__ == "__main__":
     
     train_datasets, test_datasets = get_dataset(args)
     clients = []
-    print('*' * 50, args.model_type, 'model', '*' * 50)
+    print('*' * 50, 'training', args.model_type, 'model', '*' * 50)
     if args.model_type == "compression":
         server = ServerCom(args, test_datasets)
         for c_id in range(args.client_nums):
@@ -88,6 +95,10 @@ if __name__ == "__main__":
         server = ServerBack(args, test_datasets)
         for c_id in range(args.client_nums):
             clients.append(ClientBack(args, train_datasets, c_id))
+    elif args.model_type == "dp":
+        server = ServerDP(args, test_datasets)
+        for c_id in range(args.client_nums):
+            clients.append(ClientDP(args, train_datasets, c_id))
     else:
         assert "no model"
     
@@ -100,12 +111,26 @@ if __name__ == "__main__":
         for name, params in server.global_model.state_dict().items():
             client_weights[name] = torch.zeros_like(params)
             client_weights_name[name] = 0
+        
         if args.model_type == "backdoor":
             for client in candidates:
                 if client.client_id in [1, 4, 7]:
                     print("malicious client:", client.client_id)
                     diff = client.local_train_malicious(server.global_model, client.client_id)
                 else:
+                    diff = client.local_train(server.global_model, client.client_id)
+                
+                for name, params in server.global_model.state_dict().items():
+                    if name in diff:
+                        client_weights[name].add_(diff[name])
+                        client_weights_name[name] += 1
+        if args.model_type == "dp":
+            for client in candidates:
+                if args.dp:
+                    print("DP Train")
+                    diff = client.local_train_dp(server.global_model, client.client_id)
+                else:
+                    print('No DP Train')
                     diff = client.local_train(server.global_model, client.client_id)
                 
                 for name, params in server.global_model.state_dict().items():
@@ -127,9 +152,11 @@ if __name__ == "__main__":
             server.model_aggregate(client_weights)
         elif args.model_type == "backdoor":
             server.model_aggregate(client_weights)
+        elif args.model_type == "dp":
+            server.model_aggregate(client_weights)
         else:
             assert "no type model_aggregate"
         
         acc, loss = server.model_eval()
         
-        print("Epoch %d, acc: %f, loss: %f\n" % (ge, acc, loss))
+        print('{:>2}th Global Epoch Done | Acc: {:.3f} | Loss: {:.3f}'.format(ge + 1, acc, loss))
