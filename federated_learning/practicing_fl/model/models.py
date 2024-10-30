@@ -8,6 +8,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import models
 
+
 class CNNMnist(nn.Module):
     def __init__(self):
         super(CNNMnist, self).__init__()
@@ -25,7 +26,7 @@ class CNNMnist(nn.Module):
 
         # return F.log_softmax(x, dim=1)
         return x
-    
+
 
 
 class LeNet(nn.Module):
@@ -43,14 +44,15 @@ class LeNet(nn.Module):
         self.fc = nn.Sequential(
             nn.Linear(768, 10)
         )
-    
+
     def forward(self, x):
         out = self.body(x)
         out = out.view(out.size(0), -1)
         # print(out.size())
         out = self.fc(out)
         return out
-    
+
+
 def model_norm(model_1, model_2):
     squared_sum = 0
     for name, layer in model_1.named_parameters():
@@ -59,5 +61,27 @@ def model_norm(model_1, model_2):
     return math.sqrt(squared_sum)
 
 
+# 根据网络层的不同定义不同的参数初始化方式
+def weight_init(m):
+    if isinstance(m, nn.Linear):
+        nn.init.xavier_normal_(m.weight)
+        nn.init.constant_(m.bias, 0)
+    elif isinstance(m, nn.Conv2d):
+        nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+    elif isinstance(m, nn.BatchNorm2d):
+        nn.init.constant_(m.weight, 1)
+        nn.init.constant_(m.bias, 0)
+
+
 if __name__ == "__main__":
-    print()
+    CNNMnist = CNNMnist()
+    para_shape = {}
+    for k, v in CNNMnist.named_parameters():
+        print(k, v.size())
+        print('bias' in k)
+        para_shape[k] = v.shape
+    print(para_shape)
+    # for k, v in CNNMnist.state_dict().items():
+    #     print(k, v.size())
+    # CNNMnist.apply(weight_init)
+

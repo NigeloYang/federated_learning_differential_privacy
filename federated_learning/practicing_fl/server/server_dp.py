@@ -47,10 +47,9 @@ class ServerDP(object):
         for batch_id, batch in enumerate(self.test_loader):
             data, target = batch
             dataset_size += data.size()[0]
-            
-            if torch.cuda.is_available():
-                data = data.cuda()
-                target = target.cuda()
+
+            data = data.to(self.args.device)
+            target = target.to(self.args.device)
             
             output = self.global_model(data)
             # get the index of the max log-probability
