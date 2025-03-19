@@ -6,6 +6,7 @@
 import time
 import os
 import numpy as np
+import argparse
 import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
@@ -87,9 +88,11 @@ def lfw_dataset(lfw_path, shape_img):
 
 
 def main():
-    dataset = 'lfw'
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dst_name', type=str,default="fmnist", help='attack model')
+    args = parser.parse_args()
     data_path = './data/'
-    save_path = './save_model/'
+    save_path = './dlg_test/{}/'.format(args.dst_name)
     
     lr = 1.0
     num_dummy = 1
@@ -102,31 +105,40 @@ def main():
     tt = transforms.Compose([transforms.ToTensor()])
     tp = transforms.Compose([transforms.ToPILImage()])
     
-    print(dataset, 'data_path:', data_path)
-    print(dataset, 'save_path:', save_path)
+    print(args.dst_name, 'data_path:', data_path)
+    print(args.dst_name, 'save_path:', save_path)
     
     if not os.path.exists('results'):
         os.mkdir('results')
     if not os.path.exists(save_path):
         os.mkdir(save_path)
-    
+
     ''' load data '''
-    if dataset == 'MNIST':
+    if args.dst_name == 'mnist':
         shape_img = (28, 28)
         num_classes = 10
         channel = 1
         hidden = 588
         dst = datasets.MNIST(data_path, download=False)
-    
-    elif dataset == 'cifar100':
+    elif args.dst_name == 'fmnist':
+        shape_img = (28, 28)
+        num_classes = 10
+        channel = 1
+        hidden = 588
+        dst = datasets.FashionMNIST(data_path, download=False)
+    elif args.dst_name == 'cifar10':
+        shape_img = (32, 32)
+        num_classes = 100
+        channel = 3
+        hidden = 768
+        dst = datasets.CIFAR10(data_path, download=False)
+    elif args.dst_name == 'cifar100':
         shape_img = (32, 32)
         num_classes = 100
         channel = 3
         hidden = 768
         dst = datasets.CIFAR100(data_path, download=False)
-    
-    
-    elif dataset == 'lfw':
+    elif args.dst_name == 'lfw':
         shape_img = (32, 32)
         num_classes = 5749
         channel = 3
